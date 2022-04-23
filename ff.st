@@ -27,22 +27,37 @@ DenotativeObject subclass: #HabitatDeAvispas
 
 !classDefinition: 'HabitatDeAvispas class' category: 'ff'!
 HabitatDeAvispas class
-	instanceVariableNames: 'cantidadDeHuevosDeAvispas'!
+	instanceVariableNames: 'cantidadDeHuevosDeAvispas cantidadDeOrugas'!
+
+!HabitatDeAvispas class methodsFor: 'as yet unclassified' stamp: 'gmcb 4/23/2022 14:08:49'!
+agregarOruga
+	cantidadDeOrugas := 1
+	! !
 
 !HabitatDeAvispas class methodsFor: 'as yet unclassified' stamp: 'gmcb 4/21/2022 19:54:06'!
 cantidadDeHuevosDeAvispas
 	^ cantidadDeHuevosDeAvispas.! !
 
-!HabitatDeAvispas class methodsFor: 'as yet unclassified' stamp: 'gmcb 4/21/2022 19:58:45'!
+!HabitatDeAvispas class methodsFor: 'as yet unclassified' stamp: 'gmcb 4/23/2022 14:17:34'!
+cantidadDeOrugas
+	^cantidadDeOrugas.! !
+
+!HabitatDeAvispas class methodsFor: 'as yet unclassified' stamp: 'gmcb 4/23/2022 14:04:00'!
+eliminarHuevosDeAvispas
+	^cantidadDeHuevosDeAvispas := 0.! !
+
+!HabitatDeAvispas class methodsFor: 'as yet unclassified' stamp: 'gmcb 4/23/2022 14:11:08'!
 incubarHuevoDeAvispa
-	cantidadDeHuevosDeAvispas := 1.! !
+	cantidadDeOrugas := cantidadDeOrugas - 1.
+	cantidadDeHuevosDeAvispas := cantidadDeHuevosDeAvispas + 1.! !
 
 
-!HabitatDeAvispas class methodsFor: '--** private fileout/in **--' stamp: 'gmcb 4/21/2022 20:06:19'!
+!HabitatDeAvispas class methodsFor: '--** private fileout/in **--' stamp: 'gmcb 4/23/2022 14:18:09'!
 initializeCollaboratorsFromFile
 	"Auto generated method for loading purposes - Do not modify it"
 
-	cantidadDeHuevosDeAvispas := 1.! !
+	cantidadDeHuevosDeAvispas := 1.
+	cantidadDeOrugas := 0.! !
 
 
 !classDefinition: #PruebasReproduccionDeAvispas category: 'ff'!
@@ -300,16 +315,16 @@ queElHabitatTengaDosOrugasMas
 queElHabitatTengaDosPolillasMas
 	Assert isTrue: false description: 'Reemplazar esto por la implementación correspondiente'.! !
 
-!PruebasReproduccionDeAvispas class methodsFor: 'Para completar' stamp: 'JMB 4/19/2022 19:15:37'!
+!PruebasReproduccionDeAvispas class methodsFor: 'Para completar' stamp: 'gmcb 4/23/2022 14:09:25'!
 queElHabitatTengaUnaOrugaMas
-	Assert isTrue: false description: 'Reemplazar esto por la implementación correspondiente'.! !
+	HabitatDeAvispas agregarOruga.! !
 
 !PruebasReproduccionDeAvispas class methodsFor: 'Para completar' stamp: 'JMB 4/19/2022 19:15:42'!
 queElHabitatTengaUnaPolillaMas
 	Assert isTrue: false description: 'Reemplazar esto por la implementación correspondiente'.! !
 
-!PruebasReproduccionDeAvispas class methodsFor: 'Para completar' stamp: 'JMB 4/18/2022 18:44:02'!
+!PruebasReproduccionDeAvispas class methodsFor: 'Para completar' stamp: 'gmcb 4/23/2022 14:03:27'!
 retrocederElHabitatAlInicioDeLosTiempos
-	"Implementar cuando sea necesario"! !
+	HabitatDeAvispas eliminarHuevosDeAvispas.! !
 
 HabitatDeAvispas initializeAfterFileIn!
