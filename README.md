@@ -1,6 +1,4 @@
-# algo3_ejs
-
-Respuestas Ejercicio 1: Avispas y Abejas
+#Respuestas Ejercicio 1: Avispas y Abejas
 
 ## Sobre implementar funcionalidad
 Cuando hicimos nuestra implementacion, no pasaba los tres primeros test de una. Fuimos implementando esta funcionalidad haciendo que esta vaya satisfaciendo cada prueba y verificando que las anteriores continuen sin problemas. Este metodo para implementar una funcionalidad nos parecio muy util a la hora de simplificar el cómo llevar a cabo la implementacion para que unicamente cumpla con las pruebas vistas hasta el momento, las cuales nos indicaron cual seria el comportamiento que nuestro modelo debia tener y posteriormente ir extendiendo la funcionalidad de dicho modelo.
