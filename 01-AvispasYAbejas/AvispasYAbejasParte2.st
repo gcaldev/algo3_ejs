@@ -11,25 +11,17 @@ DenotativeObject subclass: #AvispaLara
 AvispaLara class
 	instanceVariableNames: ''!
 
-!AvispaLara class methodsFor: 'funcionamiento avispa' stamp: 'gmcb 4/24/2022 20:42:03'!
-hayUnHuevoDeOrianaUOrnella
-	^HabitatDeAvispas hayUnHuevoDeOrianaUOrnella.! !
-
-!AvispaLara class methodsFor: 'funcionamiento avispa' stamp: 'gmcb 4/24/2022 20:42:25'!
-hayUnHuevoDePolly
-	^HabitatDeAvispas hayUnHuevoDePolly.! !
-
 !AvispaLara class methodsFor: 'funcionamiento avispa' stamp: 'gmcb 4/24/2022 16:55:57'!
 incubarHuevo
 	HabitatDeAvispas agregarUnHuevoDeAvispaLara.! !
 
-!AvispaLara class methodsFor: 'funcionamiento avispa' stamp: 'gmcb 4/24/2022 20:45:07'!
+!AvispaLara class methodsFor: 'funcionamiento avispa' stamp: 'gmcb 4/25/2022 16:14:51'!
 intentarReproducirse
-	self hayUnHuevoDeOrianaUOrnella ifTrue:[
+	HabitatDeAvispas hayUnHuevoDeOrianaUOrnella ifTrue:[
 			HabitatDeAvispas eliminarUnHuevoDeOrianaUOrnella.
 			self incubarHuevo.
 		] ifFalse:[
-		self hayUnHuevoDePolly ifTrue:[
+		HabitatDeAvispas  hayUnHuevoDePolly ifTrue:[
 			HabitatDeAvispas eliminarUnHuevoDePolly.
 			self incubarHuevo.
 			]
@@ -51,18 +43,14 @@ DenotativeObject subclass: #AvispaOriana
 AvispaOriana class
 	instanceVariableNames: ''!
 
-!AvispaOriana class methodsFor: 'funcionamiento avispa' stamp: 'gmcb 4/24/2022 20:42:40'!
-hayUnaOruga
-	^HabitatDeAvispas hayUnaOruga.! !
-
 !AvispaOriana class methodsFor: 'funcionamiento avispa' stamp: 'SMB 4/23/2022 17:21:16'!
 incubarHuevo
 	HabitatDeAvispas eliminarUnaOruga.
 	HabitatDeAvispas agregarUnHuevoDeAvispaOrianaYOrnella .! !
 
-!AvispaOriana class methodsFor: 'funcionamiento avispa' stamp: 'gmcb 4/24/2022 20:45:31'!
+!AvispaOriana class methodsFor: 'funcionamiento avispa' stamp: 'gmcb 4/25/2022 16:16:10'!
 intentarReproducirse
-	self hayUnaOruga ifTrue: [ self incubarHuevo ].! !
+	HabitatDeAvispas hayUnaOruga ifTrue: [ self incubarHuevo ].! !
 
 
 !classDefinition: #AvispaOrnella category: 'AvispasYAbejasParte2'!
@@ -86,18 +74,14 @@ DenotativeObject subclass: #AvispaPolly
 AvispaPolly class
 	instanceVariableNames: ''!
 
-!AvispaPolly class methodsFor: 'funcionamiento avispa' stamp: 'gmcb 4/24/2022 20:42:54'!
-hayUnaPolilla
-	^HabitatDeAvispas hayUnaPolilla.! !
-
 !AvispaPolly class methodsFor: 'funcionamiento avispa' stamp: 'SMB 4/23/2022 17:22:44'!
 incubarHuevo
 	HabitatDeAvispas eliminarUnaPolilla.
 	HabitatDeAvispas agregarUnHuevoDeAvispaPolly .! !
 
-!AvispaPolly class methodsFor: 'funcionamiento avispa' stamp: 'gmcb 4/24/2022 20:45:40'!
+!AvispaPolly class methodsFor: 'funcionamiento avispa' stamp: 'gmcb 4/25/2022 16:16:42'!
 intentarReproducirse
-	self hayUnaPolilla ifTrue: [ self incubarHuevo ].! !
+	HabitatDeAvispas hayUnaPolilla ifTrue: [ self incubarHuevo ].! !
 
 
 !classDefinition: #HabitatDeAvispas category: 'AvispasYAbejasParte2'!
@@ -213,7 +197,7 @@ hayUnaOruga
 	^cantidadDeOrugas > 0! !
 
 
-!HabitatDeAvispas class methodsFor: '--** private fileout/in **--' stamp: 'gmcb 4/24/2022 21:09:32'!
+!HabitatDeAvispas class methodsFor: '--** private fileout/in **--' stamp: 'gmcb 4/25/2022 16:20:59'!
 initializeCollaboratorsFromFile
 	"Auto generated method for loading purposes - Do not modify it"
 
