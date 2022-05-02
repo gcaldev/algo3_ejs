@@ -9,7 +9,7 @@ Representamos el comportamiento de verificar que una accion se llevo a cabo ante
 ¿Cuáles son las formas en que podemos representar entes de la realidad en Smalltalk que conocés? Es decir, ¿qué cosas del lenguaje Smalltalk puedo usar para representar entidades de la realidad?
 
 Podemos representar entes de la realidad en Smalltalk apartir de: Objetos, Mensajes, Clases.
-Los mensajes lo podemos usar para representar comportamiento, las clases las podemos usar para abstraer ideas o conceptos abstractos, y los objetos los podemos usar para modelar entidades concretas del mundo real, siendo estos objetos instancias de nuestras Clases.
+Los mensajes los podemos usar para representar comportamiento, las clases las podemos usar para abstraer ideas o conceptos abstractos, y los objetos los podemos usar para modelar entidades concretas del mundo real, siendo estos objetos instancias de nuestras Clases.
 
 
 ## Teoría de Naur
