@@ -2,7 +2,7 @@
 ## Abstracción de los tests 01 y 02
 En los test 01 y 02 hay código repetido. Cuando lo extrajeron crearon algo nuevo. Eso es algo que estaba en la realidad y no estaba representado en nuestro código, por eso teníamos código repetido. ¿Cuál es esa entidad de la realidad que crearon?
 
-Representamos el comportamiento de verificar que una accion se llevo a cabo antes de determinado tiempo
+La nueva entidad que creamos representa el comportamiento de verificar que una accion se llevo a cabo antes de un determinado tiempo.
 
 
 ## Cómo representar en Smalltalk
