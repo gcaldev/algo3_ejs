@@ -383,10 +383,9 @@ Numero subclass: #Entero
 	
 ! !
 
-!Entero methodsFor: 'arithmetic operations' stamp: 'NR 9/23/2018 23:40:37'!
+!Entero methodsFor: 'arithmetic operations' stamp: 'gmcb 5/8/2022 18:08:54'!
 - aSubtrahend 
-	
-	^ self class with: value - aSubtrahend integerValue.! !
+	^ aSubtrahend substractToEntero: self.! !
 
 !Entero methodsFor: 'arithmetic operations' stamp: 'smb 5/7/2022 21:21:08'!
 / aDivisor 
@@ -401,6 +400,10 @@ beMultipliedToEntero: aEnteroMultiplier
 !Entero methodsFor: 'arithmetic operations' stamp: 'smb 5/7/2022 20:54:06'!
 beMultipliedToFraccion: aFraccionMultiplier
 	^ (aFraccionMultiplier numerator  * self ) / aFraccionMultiplier denominator.! !
+
+!Entero methodsFor: 'arithmetic operations' stamp: 'gmcb 5/8/2022 17:51:53'!
+divideAFraccion: aFraccionDividend
+	^Fraccion with: aFraccionDividend numerator over: self  * aFraccionDividend denominator.! !
 
 !Entero methodsFor: 'arithmetic operations' stamp: 'smb 5/7/2022 21:16:12'!
 divideAnEntero: aDividend
@@ -422,10 +425,6 @@ fibonacci
 	
 	^ (self - one) fibonacci + (self - two) fibonacci
 		! !
-
-!Entero methodsFor: 'arithmetic operations' stamp: 'smb 5/7/2022 21:09:49'!
-mmm: aaa
-	^Fraccion with: self over: aaa! !
 
 
 !Entero methodsFor: 'comparing' stamp: 'HernanWilkinson 5/7/2016 21:01'!
@@ -494,6 +493,14 @@ beAddedToEntero: anEnteroAugend
 beAddedToFraccion: anFraccionAugend
 	^Fraccion with: (anFraccionAugend denominator * self) + anFraccionAugend numerator over: anFraccionAugend denominator.! !
 
+!Entero methodsFor: 'as yet unclassified' stamp: 'gmcb 5/8/2022 18:07:29'!
+substractToEntero: aMinuend
+	^self class with: aMinuend integerValue - self integerValue.! !
+
+!Entero methodsFor: 'as yet unclassified' stamp: 'gmcb 5/8/2022 18:16:56'!
+substractToFraccion: aaa
+	^Fraccion with: aaa numerator  - (self * aaa denominator ) over: aaa denominator.! !
+
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
 !classDefinition: 'Entero class' category: 'Numeros-Parte2-Ejercicio'!
@@ -528,28 +535,13 @@ Numero subclass: #Fraccion
 + anAdder 
 	^anAdder beAddedToFraccion: self.! !
 
-!Fraccion methodsFor: 'arithmetic operations' stamp: 'NR 9/23/2018 23:43:50'!
+!Fraccion methodsFor: 'arithmetic operations' stamp: 'gmcb 5/8/2022 18:17:50'!
 - aSubtrahend 
-	
-	| newNumerator newDenominator |
-	
-	newNumerator := (numerator * aSubtrahend denominator) - (denominator * aSubtrahend numerator).
-	newDenominator := denominator * aSubtrahend denominator.
-	
-	^newNumerator / newDenominator 
-! !
+	^ aSubtrahend substractToFraccion: self.! !
 
-!Fraccion methodsFor: 'arithmetic operations' stamp: 'smb 5/7/2022 21:40:48'!
+!Fraccion methodsFor: 'arithmetic operations' stamp: 'gmcb 5/8/2022 17:47:48'!
 / aDivisor 
-	"
-	1/2 / 1/5 -> 5/2
-	
-	(a/b) / (c/d) = (a.d) / (b.c)
-	
-	"
-	(aDivisor class isKindOf: Entero) ifTrue: [^Fraccion with: (aDivisor  * denominator ) over: numerator].
-	(aDivisor class isKindOf: Fraccion) ifTrue: [^Fraccion with: (aDivisor denominator  * numerator ) over: (aDivisor numerator * denominator)].
-	"^(numerator * aDivisor denominator) / (denominator * aDivisor numerator)"! !
+	^aDivisor divideAFraccion: self.! !
 
 !Fraccion methodsFor: 'arithmetic operations' stamp: 'gmcb 5/5/2022 20:28:26'!
 beAddedToEntero: anEnteroAugend
@@ -627,6 +619,10 @@ isZero
 	^false! !
 
 
+!Fraccion methodsFor: 'printing' stamp: 'gmcb 5/8/2022 17:48:17'!
+divideAFraccion: aFraccionDividend
+	^Fraccion with: (denominator  * aFraccionDividend numerator ) over: (numerator * aFraccionDividend denominator)! !
+
 !Fraccion methodsFor: 'printing' stamp: 'HAW 9/24/2018 08:54:46'!
 printOn: aStream
 
@@ -634,6 +630,19 @@ printOn: aStream
 		print: numerator;
 		nextPut: $/;
 		print: denominator ! !
+
+!Fraccion methodsFor: 'printing' stamp: 'gmcb 5/8/2022 18:08:04'!
+substractToEntero: aMinuend
+	^Fraccion with: aMinuend * self denominator - self numerator over: self denominator! !
+
+!Fraccion methodsFor: 'printing' stamp: 'gmcb 5/8/2022 18:13:39'!
+substractToFraccion: aMinuend
+
+	| newNumerator newDenominator |
+	newNumerator := (aMinuend numerator * denominator) - (aMinuend denominator * numerator).
+	newDenominator := aMinuend denominator * denominator.
+	
+	^newNumerator / newDenominator! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
