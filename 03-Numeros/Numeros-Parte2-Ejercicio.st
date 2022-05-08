@@ -373,13 +373,9 @@ Numero subclass: #Entero
 	poolDictionaries: ''
 	category: 'Numeros-Parte2-Ejercicio'!
 
-!Entero methodsFor: 'arithmetic operations' stamp: 'gmcb 5/5/2022 20:51:43'!
+!Entero methodsFor: 'arithmetic operations' stamp: 'smb 5/7/2022 20:32:04'!
 * aMultiplier
-	"Quedamos aca" 
-	(aMultiplier isKindOf: self class) ifTrue: [^self class with: value * aMultiplier integerValue].
-	(aMultiplier isKindOf: Fraccion) ifTrue: [^Fraccion with: (self * aMultiplier numerator) / (aMultiplier denominator)
-].
-	! !
+	^ aMultiplier beMultipliedToEntero: self.! !
 
 !Entero methodsFor: 'arithmetic operations' stamp: 'gmcb 5/5/2022 20:29:07'!
 + anAdder
@@ -392,10 +388,26 @@ Numero subclass: #Entero
 	
 	^ self class with: value - aSubtrahend integerValue.! !
 
-!Entero methodsFor: 'arithmetic operations' stamp: 'HernanWilkinson 5/7/2016 23:14'!
+!Entero methodsFor: 'arithmetic operations' stamp: 'smb 5/7/2022 21:21:08'!
 / aDivisor 
+		
+	^aDivisor divideAnEntero: self.
+	! !
+
+!Entero methodsFor: 'arithmetic operations' stamp: 'smb 5/7/2022 20:55:45'!
+beMultipliedToEntero: aEnteroMultiplier
+	^self class with: self integerValue * aEnteroMultiplier integerValue .! !
+
+!Entero methodsFor: 'arithmetic operations' stamp: 'smb 5/7/2022 20:54:06'!
+beMultipliedToFraccion: aFraccionMultiplier
+	^ (aFraccionMultiplier numerator  * self ) / aFraccionMultiplier denominator.! !
+
+!Entero methodsFor: 'arithmetic operations' stamp: 'smb 5/7/2022 21:16:12'!
+divideAnEntero: aDividend
+	^Fraccion with: aDividend over: self.
 	
-	^Fraccion with: self over: aDivisor! !
+	
+	"aDivisor beDividedToEntero: self"! !
 
 !Entero methodsFor: 'arithmetic operations' stamp: 'HAW 9/24/2018 08:47:50'!
 fibonacci
@@ -410,6 +422,10 @@ fibonacci
 	
 	^ (self - one) fibonacci + (self - two) fibonacci
 		! !
+
+!Entero methodsFor: 'arithmetic operations' stamp: 'smb 5/7/2022 21:09:49'!
+mmm: aaa
+	^Fraccion with: self over: aaa! !
 
 
 !Entero methodsFor: 'comparing' stamp: 'HernanWilkinson 5/7/2016 21:01'!
@@ -504,11 +520,9 @@ Numero subclass: #Fraccion
 	poolDictionaries: ''
 	category: 'Numeros-Parte2-Ejercicio'!
 
-!Fraccion methodsFor: 'arithmetic operations' stamp: 'HernanWilkinson 5/7/2016 23:14'!
+!Fraccion methodsFor: 'arithmetic operations' stamp: 'smb 5/7/2022 20:57:39'!
 * aMultiplier 
-	
-	^(numerator * aMultiplier numerator) / (denominator * aMultiplier denominator)
-	! !
+	^ aMultiplier beMultipliedToFraccion: self.! !
 
 !Fraccion methodsFor: 'arithmetic operations' stamp: 'gmcb 5/5/2022 20:42:52'!
 + anAdder 
@@ -525,10 +539,17 @@ Numero subclass: #Fraccion
 	^newNumerator / newDenominator 
 ! !
 
-!Fraccion methodsFor: 'arithmetic operations' stamp: 'HernanWilkinson 5/7/2016 23:14'!
+!Fraccion methodsFor: 'arithmetic operations' stamp: 'smb 5/7/2022 21:40:48'!
 / aDivisor 
+	"
+	1/2 / 1/5 -> 5/2
 	
-	^(numerator * aDivisor denominator) / (denominator * aDivisor numerator)! !
+	(a/b) / (c/d) = (a.d) / (b.c)
+	
+	"
+	(aDivisor class isKindOf: Entero) ifTrue: [^Fraccion with: (aDivisor  * denominator ) over: numerator].
+	(aDivisor class isKindOf: Fraccion) ifTrue: [^Fraccion with: (aDivisor denominator  * numerator ) over: (aDivisor numerator * denominator)].
+	"^(numerator * aDivisor denominator) / (denominator * aDivisor numerator)"! !
 
 !Fraccion methodsFor: 'arithmetic operations' stamp: 'gmcb 5/5/2022 20:28:26'!
 beAddedToEntero: anEnteroAugend
@@ -543,6 +564,18 @@ beAddedToFraccion: anFraccionAugend
 	
 	^newNumerator / newDenominator 
 ! !
+
+!Fraccion methodsFor: 'arithmetic operations' stamp: 'smb 5/7/2022 20:44:25'!
+beMultipliedToEntero: aEnteroMultiplier
+	^(aEnteroMultiplier * self numerator) / (self denominator).! !
+
+!Fraccion methodsFor: 'arithmetic operations' stamp: 'smb 5/7/2022 20:53:40'!
+beMultipliedToFraccion: aFraccionMultiplier
+	^ (numerator  * aFraccionMultiplier numerator) / (denominator * aFraccionMultiplier denominator)! !
+
+!Fraccion methodsFor: 'arithmetic operations' stamp: 'smb 5/7/2022 21:17:30'!
+divideAnEntero: aDividend
+	^Fraccion with: (aDividend * self denominator) over: self numerator! !
 
 
 !Fraccion methodsFor: 'comparing' stamp: 'HernanWilkinson 5/7/2016 20:42'!
