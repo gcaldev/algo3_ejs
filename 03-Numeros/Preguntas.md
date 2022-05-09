@@ -2,12 +2,15 @@
 # Aporte de los mensajes de DD
 En un double dispatch (DD), ¿qué información aporta cada uno de los dos llamados?
 
-En el primer llamado lo que se hace con el parametro recibido es enviarle un mensaje, en ese momento pueden pasar dos cosas:
-Que el objeto sepa responder el mensaje o que no lo sepa responder. En tal caso nos daria un DoesNotUndestood.
-En caso que ocurra el primer caso
+En el primer llamado lo que hacemos con el parametro recibido es enviarle el mensaje polimorfico.
+Nuestro primer llamado nos aporta saber con que tipo de clase va a estar interactuando nuestro parametro.
+Una vez que se ejecuta dicho llamado, se procede al segundo llamado en el cual a nuestro parametro incial le pasamos un mensaje, que este gracias al polimorfismo sabria responder, en el cual ya sabiendo de que tipo es nuestra clase del primer mensaje sabe el metodo a ejecutar. 
 
 # Lógica de instanciado
 Con lo que vieron y saben hasta ahora, ¿donde les parece mejor tener la lógica de cómo instanciar un objeto? ¿por qué? ¿Y si se crea ese objeto desde diferentes lugares y de diferentes formas? ¿cómo lo resuelven?
+
+La logica del instanciado consideramos que es mejor tenerla en la subclase correspondiente al objeto a instanciar. 
+Ya que de esta manera podemos asegurarnos de no estar rompiendo encapsulamiento y de que su comportamiento sea el adecuado.
 
 # Nombres de las categorías de métodos
 Con lo que vieron y trabajaron hasta ahora, ¿qué criterio están usando para categorizar métodos?
