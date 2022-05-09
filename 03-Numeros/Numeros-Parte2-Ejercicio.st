@@ -341,7 +341,6 @@ invalidNumberType
 
 	self error: self class invalidNumberTypeErrorDescription! !
 
-
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
 !classDefinition: 'Numero class' category: 'Numeros-Parte2-Ejercicio'!
@@ -365,23 +364,22 @@ Numero subclass: #Entero
 	poolDictionaries: ''
 	category: 'Numeros-Parte2-Ejercicio'!
 
-!Entero methodsFor: 'arithmetic operations' stamp: 'smb 5/7/2022 20:32:04'!
-* aMultiplier
-	^ aMultiplier beMultipliedToEntero: self.! !
+!Entero methodsFor: 'arithmetic operations' stamp: 'gmcb 5/9/2022 09:33:38'!
+* aMultiplicand
+	^aMultiplicand beMultipliedToEntero: self.! !
 
-!Entero methodsFor: 'arithmetic operations' stamp: 'gmcb 5/5/2022 20:29:07'!
-+ anAdder
-	^anAdder beAddedToEntero: self.
+!Entero methodsFor: 'arithmetic operations' stamp: 'gmcb 5/9/2022 09:35:48'!
++ anAddend
+	^anAddend beAddedToEntero: self.
 	
 ! !
 
-!Entero methodsFor: 'arithmetic operations' stamp: 'gmcb 5/8/2022 18:08:54'!
+!Entero methodsFor: 'arithmetic operations' stamp: 'gmcb 5/9/2022 09:52:49'!
 - aSubtrahend 
-	^ aSubtrahend substractToEntero: self.! !
+	^aSubtrahend substractToEntero: self.! !
 
-!Entero methodsFor: 'arithmetic operations' stamp: 'smb 5/7/2022 21:21:08'!
+!Entero methodsFor: 'arithmetic operations' stamp: 'gmcb 5/9/2022 09:53:01'!
 / aDivisor 
-		
 	^aDivisor divideAnEntero: self.
 	! !
 
@@ -400,9 +398,8 @@ fibonacci
 		! !
 
 
-!Entero methodsFor: 'comparing' stamp: 'HernanWilkinson 5/7/2016 21:01'!
+!Entero methodsFor: 'comparing' stamp: 'gmcb 5/9/2022 09:53:11'!
 = anObject
-
 	^(anObject isKindOf: self class) and: [ value = anObject integerValue ]! !
 
 !Entero methodsFor: 'comparing' stamp: 'HernanWilkinson 5/7/2016 20:17'!
@@ -447,9 +444,8 @@ isZero
 	^value = 0! !
 
 
-!Entero methodsFor: 'arithmetic operations - private' stamp: 'HernanWilkinson 5/7/2016 21:55'!
+!Entero methodsFor: 'arithmetic operations - private' stamp: 'gmcb 5/9/2022 09:53:06'!
 // aDivisor 
-	
 	^self class with: value // aDivisor integerValue! !
 
 !Entero methodsFor: 'arithmetic operations - private' stamp: 'HernanWilkinson 5/7/2016 21:00'!
@@ -462,36 +458,33 @@ greatestCommonDivisorWith: anEntero
 beAddedToEntero: anEnteroAugend
 	^self class with: anEnteroAugend integerValue + self integerValue.! !
 
-!Entero methodsFor: 'polymorphism - private' stamp: 'gmcb 5/5/2022 20:44:26'!
-beAddedToFraccion: anFraccionAugend
-	^Fraccion with: (anFraccionAugend denominator * self) + anFraccionAugend numerator over: anFraccionAugend denominator.! !
+!Entero methodsFor: 'polymorphism - private' stamp: 'gmcb 5/9/2022 09:39:01'!
+beAddedToFraccion: aFraccionAugend
+	^(aFraccionAugend denominator * self) + aFraccionAugend numerator / aFraccionAugend denominator.! !
 
-!Entero methodsFor: 'polymorphism - private' stamp: 'smb 5/7/2022 20:55:45'!
-beMultipliedToEntero: aEnteroMultiplier
-	^self class with: self integerValue * aEnteroMultiplier integerValue .! !
+!Entero methodsFor: 'polymorphism - private' stamp: 'gmcb 5/9/2022 09:47:26'!
+beMultipliedToEntero: anEnteroMultiplier
+	^self class with: anEnteroMultiplier integerValue * self integerValue.! !
 
-!Entero methodsFor: 'polymorphism - private' stamp: 'smb 5/7/2022 20:54:06'!
+!Entero methodsFor: 'polymorphism - private' stamp: 'gmcb 5/9/2022 09:53:22'!
 beMultipliedToFraccion: aFraccionMultiplier
-	^ (aFraccionMultiplier numerator  * self ) / aFraccionMultiplier denominator.! !
+	^(aFraccionMultiplier numerator  * self ) / aFraccionMultiplier denominator.! !
 
 !Entero methodsFor: 'polymorphism - private' stamp: 'gmcb 5/8/2022 17:51:53'!
 divideAFraccion: aFraccionDividend
 	^Fraccion with: aFraccionDividend numerator over: self  * aFraccionDividend denominator.! !
 
-!Entero methodsFor: 'polymorphism - private' stamp: 'smb 5/7/2022 21:16:12'!
-divideAnEntero: aDividend
-	^Fraccion with: aDividend over: self.
-	
-	
-	"aDivisor beDividedToEntero: self"! !
+!Entero methodsFor: 'polymorphism - private' stamp: 'gmcb 5/9/2022 09:48:27'!
+divideAnEntero: anEnteroDividend
+	^Fraccion with:anEnteroDividend over:self.! !
 
-!Entero methodsFor: 'polymorphism - private' stamp: 'gmcb 5/8/2022 18:07:29'!
-substractToEntero: aMinuend
-	^self class with: aMinuend integerValue - self integerValue.! !
+!Entero methodsFor: 'polymorphism - private' stamp: 'gmcb 5/9/2022 09:41:45'!
+substractToEntero: anEnteroMinuend
+	^self class with: anEnteroMinuend integerValue - self integerValue.! !
 
-!Entero methodsFor: 'polymorphism - private' stamp: 'gmcb 5/8/2022 18:16:56'!
-substractToFraccion: aaa
-	^Fraccion with: aaa numerator  - (self * aaa denominator ) over: aaa denominator.! !
+!Entero methodsFor: 'polymorphism - private' stamp: 'gmcb 5/9/2022 09:41:33'!
+substractToFraccion: aFraccionMinuend
+	^Fraccion with: aFraccionMinuend numerator  - (self * aFraccionMinuend denominator ) over: aFraccionMinuend denominator.! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
@@ -519,26 +512,25 @@ Numero subclass: #Fraccion
 	poolDictionaries: ''
 	category: 'Numeros-Parte2-Ejercicio'!
 
-!Fraccion methodsFor: 'arithmetic operations' stamp: 'smb 5/7/2022 20:57:39'!
-* aMultiplier 
-	^ aMultiplier beMultipliedToFraccion: self.! !
+!Fraccion methodsFor: 'arithmetic operations' stamp: 'gmcb 5/9/2022 09:33:43'!
+* aMultiplicand 
+	^aMultiplicand beMultipliedToFraccion: self.! !
 
-!Fraccion methodsFor: 'arithmetic operations' stamp: 'gmcb 5/5/2022 20:42:52'!
-+ anAdder 
-	^anAdder beAddedToFraccion: self.! !
+!Fraccion methodsFor: 'arithmetic operations' stamp: 'gmcb 5/9/2022 09:35:54'!
++ anAddend 
+	^anAddend beAddedToFraccion: self.! !
 
-!Fraccion methodsFor: 'arithmetic operations' stamp: 'gmcb 5/8/2022 18:17:50'!
+!Fraccion methodsFor: 'arithmetic operations' stamp: 'gmcb 5/9/2022 09:53:49'!
 - aSubtrahend 
-	^ aSubtrahend substractToFraccion: self.! !
+	^aSubtrahend substractToFraccion: self.! !
 
 !Fraccion methodsFor: 'arithmetic operations' stamp: 'gmcb 5/8/2022 17:47:48'!
 / aDivisor 
 	^aDivisor divideAFraccion: self.! !
 
 
-!Fraccion methodsFor: 'comparing' stamp: 'HernanWilkinson 5/7/2016 20:42'!
+!Fraccion methodsFor: 'comparing' stamp: 'gmcb 5/9/2022 09:53:57'!
 = anObject
-
 	^(anObject isKindOf: self class) and: [ (numerator * anObject denominator) = (denominator * anObject numerator) ]! !
 
 !Fraccion methodsFor: 'comparing' stamp: 'HernanWilkinson 5/7/2016 20:50'!
@@ -598,42 +590,42 @@ printOn: aStream
 beAddedToEntero: anEnteroAugend
 	^self class with: (self denominator * anEnteroAugend) + self numerator over: self denominator! !
 
-!Fraccion methodsFor: 'polymorphism - private' stamp: 'gmcb 5/5/2022 20:42:18'!
-beAddedToFraccion: anFraccionAugend
+!Fraccion methodsFor: 'polymorphism - private' stamp: 'gmcb 5/9/2022 09:43:10'!
+beAddedToFraccion: aFraccionAugend
 	| newNumerator newDenominator |
 	
-	newNumerator := (numerator * anFraccionAugend denominator) + (denominator * anFraccionAugend numerator).
-	newDenominator := denominator * anFraccionAugend denominator.
+	newNumerator := (numerator * aFraccionAugend denominator) + (denominator * aFraccionAugend numerator).
+	newDenominator := denominator * aFraccionAugend denominator.
 	
 	^newNumerator / newDenominator 
 ! !
 
-!Fraccion methodsFor: 'polymorphism - private' stamp: 'smb 5/7/2022 20:44:25'!
-beMultipliedToEntero: aEnteroMultiplier
-	^(aEnteroMultiplier * self numerator) / (self denominator).! !
+!Fraccion methodsFor: 'polymorphism - private' stamp: 'gmcb 5/9/2022 09:48:50'!
+beMultipliedToEntero: anEnteroMultiplier
+	^(anEnteroMultiplier * self numerator) / (self denominator).! !
 
-!Fraccion methodsFor: 'polymorphism - private' stamp: 'smb 5/7/2022 20:53:40'!
+!Fraccion methodsFor: 'polymorphism - private' stamp: 'gmcb 5/9/2022 09:44:02'!
 beMultipliedToFraccion: aFraccionMultiplier
-	^ (numerator  * aFraccionMultiplier numerator) / (denominator * aFraccionMultiplier denominator)! !
+	^(aFraccionMultiplier numerator * numerator) / (aFraccionMultiplier denominator * denominator).! !
 
 !Fraccion methodsFor: 'polymorphism - private' stamp: 'gmcb 5/8/2022 17:48:17'!
 divideAFraccion: aFraccionDividend
 	^Fraccion with: (denominator  * aFraccionDividend numerator ) over: (numerator * aFraccionDividend denominator)! !
 
-!Fraccion methodsFor: 'polymorphism - private' stamp: 'smb 5/7/2022 21:17:30'!
-divideAnEntero: aDividend
-	^Fraccion with: (aDividend * self denominator) over: self numerator! !
+!Fraccion methodsFor: 'polymorphism - private' stamp: 'gmcb 5/9/2022 09:44:49'!
+divideAnEntero: anEnteroDividend
+	^Fraccion with: (anEnteroDividend * self denominator) over: self numerator! !
 
-!Fraccion methodsFor: 'polymorphism - private' stamp: 'gmcb 5/8/2022 18:08:04'!
-substractToEntero: aMinuend
-	^Fraccion with: aMinuend * self denominator - self numerator over: self denominator! !
+!Fraccion methodsFor: 'polymorphism - private' stamp: 'gmcb 5/9/2022 09:45:01'!
+substractToEntero: anEnteroMinuend
+	^Fraccion with: anEnteroMinuend * self denominator - self numerator over: self denominator! !
 
-!Fraccion methodsFor: 'polymorphism - private' stamp: 'gmcb 5/8/2022 18:13:39'!
-substractToFraccion: aMinuend
+!Fraccion methodsFor: 'polymorphism - private' stamp: 'gmcb 5/9/2022 09:45:32'!
+substractToFraccion: aFraccionMinuend
 
 	| newNumerator newDenominator |
-	newNumerator := (aMinuend numerator * denominator) - (aMinuend denominator * numerator).
-	newDenominator := aMinuend denominator * denominator.
+	newNumerator := (aFraccionMinuend numerator * denominator) - (aFraccionMinuend denominator * numerator).
+	newDenominator := aFraccionMinuend denominator * denominator.
 	
 	^newNumerator / newDenominator! !
 
