@@ -1,4 +1,4 @@
-!classDefinition: #OOStackTest category: #'Stack-Exercise'!
+!classDefinition: #OOStackTest category: 'Stack-Exercise'!
 TestCase subclass: #OOStackTest
 	instanceVariableNames: ''
 	classVariableNames: ''
@@ -137,7 +137,7 @@ test10CanNotTopWhenThereAreNoObjectsInTheStack
 ! !
 
 
-!classDefinition: #SentenceFinderByPrefixTest category: #'Stack-Exercise'!
+!classDefinition: #SentenceFinderByPrefixTest category: 'Stack-Exercise'!
 TestCase subclass: #SentenceFinderByPrefixTest
 	instanceVariableNames: ''
 	classVariableNames: ''
@@ -145,16 +145,43 @@ TestCase subclass: #SentenceFinderByPrefixTest
 	category: 'Stack-Exercise'!
 
 
-!classDefinition: #OOStack category: #'Stack-Exercise'!
+!classDefinition: #OOStack category: 'Stack-Exercise'!
 Object subclass: #OOStack
-	instanceVariableNames: ''
+	instanceVariableNames: 'stack'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Stack-Exercise'!
 
+!OOStack methodsFor: 'as yet unclassified' stamp: 'smb 5/11/2022 22:14:37'!
+initialize
+	stack := OrderedCollection new.
+	^OOEmptyStack new! !
+
+!OOStack methodsFor: 'as yet unclassified' stamp: 'smb 5/11/2022 21:49:38'!
+isEmpty
+	^stack isEmpty .! !
+
+!OOStack methodsFor: 'as yet unclassified' stamp: 'smb 5/11/2022 22:12:23'!
+pop
+	self subclassResponsibility ! !
+
+!OOStack methodsFor: 'as yet unclassified' stamp: 'smb 5/11/2022 21:50:53'!
+push: aStringToBeStored
+	stack addFirst: aStringToBeStored .! !
+
+!OOStack methodsFor: 'as yet unclassified' stamp: 'smb 5/11/2022 21:37:44'!
+size
+	^stack size.! !
+
+!OOStack methodsFor: 'as yet unclassified' stamp: 'smb 5/11/2022 21:58:31'!
+top
+	stack isEmpty ifTrue: [self error: self class stackEmptyErrorDescription].
+	stack isEmpty ifFalse: [^stack first.]! !
+
+
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
-!classDefinition: 'OOStack class' category: #'Stack-Exercise'!
+!classDefinition: 'OOStack class' category: 'Stack-Exercise'!
 OOStack class
 	instanceVariableNames: ''!
 
@@ -164,7 +191,32 @@ stackEmptyErrorDescription
 	^ 'Stack is empty'! !
 
 
-!classDefinition: #SentenceFinderByPrefix category: #'Stack-Exercise'!
+!classDefinition: #OOEmptyStack category: 'Stack-Exercise'!
+OOStack subclass: #OOEmptyStack
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Stack-Exercise'!
+
+!OOEmptyStack methodsFor: 'as yet unclassified' stamp: 'smb 5/11/2022 22:08:32'!
+pop
+	self error: self class stackEmptyErrorDescription.
+! !
+
+
+!classDefinition: #OONotEmptyStack category: 'Stack-Exercise'!
+OOStack subclass: #OONotEmptyStack
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Stack-Exercise'!
+
+!OONotEmptyStack methodsFor: 'as yet unclassified' stamp: 'smb 5/11/2022 22:11:49'!
+pop
+	^stack removeFirst.! !
+
+
+!classDefinition: #SentenceFinderByPrefix category: 'Stack-Exercise'!
 Object subclass: #SentenceFinderByPrefix
 	instanceVariableNames: ''
 	classVariableNames: ''
