@@ -147,37 +147,44 @@ TestCase subclass: #SentenceFinderByPrefixTest
 
 !classDefinition: #OOStack category: 'Stack-Exercise'!
 Object subclass: #OOStack
-	instanceVariableNames: 'stack'
+	instanceVariableNames: 'stack size'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Stack-Exercise'!
 
-!OOStack methodsFor: 'as yet unclassified' stamp: 'smb 5/11/2022 22:14:37'!
+!OOStack methodsFor: 'as yet unclassified' stamp: 'gmcb 5/12/2022 20:56:30'!
 initialize
-	stack := OrderedCollection new.
-	^OOEmptyStack new! !
+	stack := StackBase new.
+	size := 0.! !
 
 !OOStack methodsFor: 'as yet unclassified' stamp: 'smb 5/11/2022 21:49:38'!
 isEmpty
 	^stack isEmpty .! !
 
-!OOStack methodsFor: 'as yet unclassified' stamp: 'smb 5/11/2022 22:12:23'!
+!OOStack methodsFor: 'as yet unclassified' stamp: 'gmcb 5/12/2022 20:53:51'!
 pop
-	self subclassResponsibility ! !
+	| element |.
+	element := stack pop.
+	size:=size-1.
+	^element! !
 
-!OOStack methodsFor: 'as yet unclassified' stamp: 'smb 5/11/2022 21:50:53'!
+!OOStack methodsFor: 'as yet unclassified' stamp: 'gmcb 5/12/2022 20:52:21'!
 push: aStringToBeStored
-	stack addFirst: aStringToBeStored .! !
+	| newTop |
+	newTop := StackElement initializeWith: aStringToBeStored.
+	newTop beOver: stack.
+	stack := newTop.	
+	size := size + 1! !
 
-!OOStack methodsFor: 'as yet unclassified' stamp: 'smb 5/11/2022 21:37:44'!
+!OOStack methodsFor: 'as yet unclassified' stamp: 'gmcb 5/12/2022 20:52:02'!
 size
-	^stack size.! !
+	^size.! !
 
-!OOStack methodsFor: 'as yet unclassified' stamp: 'smb 5/11/2022 21:58:31'!
+!OOStack methodsFor: 'as yet unclassified' stamp: 'gmcb 5/12/2022 20:55:43'!
 top
-	stack isEmpty ifTrue: [self error: self class stackEmptyErrorDescription].
-	stack isEmpty ifFalse: [^stack first.]! !
-
+	| element |.
+	element := stack top.
+	^element.! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
@@ -191,34 +198,41 @@ stackEmptyErrorDescription
 	^ 'Stack is empty'! !
 
 
-!classDefinition: #OOEmptyStack category: 'Stack-Exercise'!
-OOStack subclass: #OOEmptyStack
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Stack-Exercise'!
-
-!OOEmptyStack methodsFor: 'as yet unclassified' stamp: 'smb 5/11/2022 22:08:32'!
-pop
-	self error: self class stackEmptyErrorDescription.
-! !
-
-
-!classDefinition: #OONotEmptyStack category: 'Stack-Exercise'!
-OOStack subclass: #OONotEmptyStack
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Stack-Exercise'!
-
-!OONotEmptyStack methodsFor: 'as yet unclassified' stamp: 'smb 5/11/2022 22:11:49'!
-pop
-	^stack removeFirst.! !
-
-
 !classDefinition: #SentenceFinderByPrefix category: 'Stack-Exercise'!
 Object subclass: #SentenceFinderByPrefix
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Stack-Exercise'!
+
+
+!classDefinition: #StackNode category: 'Stack-Exercise'!
+Object subclass: #StackNode
+	instanceVariableNames: 'value over'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Stack-Exercise'!
+
+
+!classDefinition: #StackBase category: 'Stack-Exercise'!
+StackNode subclass: #StackBase
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Stack-Exercise'!
+
+
+!classDefinition: #StackElement category: 'Stack-Exercise'!
+StackNode subclass: #StackElement
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Stack-Exercise'!
+
+!StackElement methodsFor: 'as yet unclassified' stamp: 'gmcb 5/12/2022 20:15:22'!
+beOver: aStackElement
+ over:= aStackElement.! !
+
+!StackElement methodsFor: 'as yet unclassified' stamp: 'gmcb 5/12/2022 20:13:34'!
+initializeWith: aElement
+	value:= aElement.! !
