@@ -307,6 +307,16 @@ test10CrashesIfThePrefixContainsASpace
 		raise: Error
 		withExceptionDo: [ :anError | self assert: SentenceFinderByPrefix errorPrefixCanNotContainSpaces equals: anError messageText ]! !
 
+!SentenceFinderByPrefixTest methodsFor: 'tests' stamp: 'gmcb 5/15/2022 15:55:06'!
+test11WordSeparatedBySpacesIsNotConsidered
+	| stack string finder sentence1 |
+	stack := OOStack new.
+	string := 'please'.
+	sentence1 := 'p l e a s e approve our exercise :)'.
+	stack push: sentence1.
+	finder := SentenceFinderByPrefix initializeWith: stack.
+	self assert: 0 equals: (finder find: string) size.! !
+
 
 !classDefinition: #OOStack category: 'Stack-Exercise'!
 Object subclass: #OOStack
@@ -369,12 +379,12 @@ Object subclass: #SentenceFinderByPrefix
 	poolDictionaries: ''
 	category: 'Stack-Exercise'!
 
-!SentenceFinderByPrefix methodsFor: 'as yet unclassified' stamp: 'smb 5/15/2022 11:37:36'!
+!SentenceFinderByPrefix methodsFor: 'as yet unclassified' stamp: 'gmcb 5/15/2022 16:36:22'!
 find: aString
 	| foundStrings actualString |
 	
 	(aString includesSubString: ' ') ifTrue: [self error: SentenceFinderByPrefix errorPrefixCanNotContainSpaces ].
-	(aString = '') ifTrue: [self error: SentenceFinderByPrefix errorEmptyPrefix ].
+	(aString isEmpty) ifTrue: [self error: SentenceFinderByPrefix errorEmptyPrefix ].
 	
 	foundStrings := OrderedCollection new.
 	[stack isEmpty] whileFalse: 		[
