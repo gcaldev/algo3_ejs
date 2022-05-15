@@ -194,12 +194,12 @@ test03TheSentenceBeginsWithSpaces
 	
 	! !
 
-!SentenceFinderByPrefixTest methodsFor: 'tests' stamp: 'smb 5/15/2022 00:40:45'!
+!SentenceFinderByPrefixTest methodsFor: 'tests' stamp: 'smb 5/15/2022 11:06:32'!
 test04TheSentenceDoNotBeginsWithTheWord
 	| stack string sentence1 sentence2 sentence3 finder oc|
 	stack := OOStack new.
-	string := 'please'.
-	sentence1 := '   please approve our exercise :)'.
+	string := 'exercise'.
+	sentence1 := 'please approve our exercise :)'.
 	sentence2 := 'Approve our exercise :)'.
 	sentence3 := 'our exercise :)'.
 
@@ -236,7 +236,7 @@ test05ThereIsTwoSentenceWithTheSearchedWord
 	
 	! !
 
-!SentenceFinderByPrefixTest methodsFor: 'tests' stamp: 'smb 5/15/2022 01:02:39'!
+!SentenceFinderByPrefixTest methodsFor: 'tests' stamp: 'smb 5/15/2022 11:33:03'!
 test06CrashesIfThePrefixBeginsWithASpace
 	| stack string finder |
 	stack := OOStack new.
@@ -246,7 +246,7 @@ test06CrashesIfThePrefixBeginsWithASpace
 	self 
 		should: [ finder find: string.]
 		raise: Error
-		withExceptionDo: [ :anError | self assert: SentenceFinderByPrefix erroPrefixCanNotBegginWithASpace equals: anError messageText ]! !
+		withExceptionDo: [ :anError | self assert: SentenceFinderByPrefix errorPrefixCanNotContainSpaces equals: anError messageText ]! !
 
 !SentenceFinderByPrefixTest methodsFor: 'tests' stamp: 'smb 5/15/2022 01:10:42'!
 test07StacksElementStayInSameOrder
@@ -282,6 +282,30 @@ test08FindNothingWithAEmptyStack
 	
 	self assert: oc size equals: 0.
 	! !
+
+!SentenceFinderByPrefixTest methodsFor: 'tests' stamp: 'smb 5/15/2022 11:38:31'!
+test09CrashesSearchingAEmptyPrefix
+	| stack string finder |
+	stack := OOStack new.
+	string := ''.
+	finder := SentenceFinderByPrefix initializeWith: stack.	
+	
+	self 
+		should: [ finder find: string.]
+		raise: Error
+		withExceptionDo: [ :anError | self assert: SentenceFinderByPrefix errorEmptyPrefix equals: anError messageText ]! !
+
+!SentenceFinderByPrefixTest methodsFor: 'tests' stamp: 'smb 5/15/2022 11:39:43'!
+test10CrashesIfThePrefixContainsASpace
+	| stack string finder |
+	stack := OOStack new.
+	string := 'plea se'.
+	finder := SentenceFinderByPrefix initializeWith: stack.	
+	
+	self 
+		should: [ finder find: string.]
+		raise: Error
+		withExceptionDo: [ :anError | self assert: SentenceFinderByPrefix errorPrefixCanNotContainSpaces equals: anError messageText ]! !
 
 
 !classDefinition: #OOStack category: 'Stack-Exercise'!
@@ -345,11 +369,13 @@ Object subclass: #SentenceFinderByPrefix
 	poolDictionaries: ''
 	category: 'Stack-Exercise'!
 
-!SentenceFinderByPrefix methodsFor: 'as yet unclassified' stamp: 'smb 5/15/2022 01:02:39'!
+!SentenceFinderByPrefix methodsFor: 'as yet unclassified' stamp: 'smb 5/15/2022 11:37:36'!
 find: aString
 	| foundStrings actualString |
 	
-	(aString beginsWith: ' ') ifTrue: [self error: SentenceFinderByPrefix erroPrefixCanNotBegginWithASpace ].
+	(aString includesSubString: ' ') ifTrue: [self error: SentenceFinderByPrefix errorPrefixCanNotContainSpaces ].
+	(aString = '') ifTrue: [self error: SentenceFinderByPrefix errorEmptyPrefix ].
+	
 	foundStrings := OrderedCollection new.
 	[stack isEmpty] whileFalse: 		[
 			actualString := stack pop.					
@@ -378,9 +404,13 @@ setStack: aStack
 SentenceFinderByPrefix class
 	instanceVariableNames: ''!
 
-!SentenceFinderByPrefix class methodsFor: 'as yet unclassified' stamp: 'smb 5/15/2022 01:02:39'!
-erroPrefixCanNotBegginWithASpace
-	^'A prefix can not beggin with a space'! !
+!SentenceFinderByPrefix class methodsFor: 'as yet unclassified' stamp: 'smb 5/15/2022 11:34:38'!
+errorEmptyPrefix
+	^'Prefix cant be a empty string'! !
+
+!SentenceFinderByPrefix class methodsFor: 'as yet unclassified' stamp: 'smb 5/15/2022 11:33:27'!
+errorPrefixCanNotContainSpaces
+	^'Prefixs can not contain empty spaces'! !
 
 !SentenceFinderByPrefix class methodsFor: 'as yet unclassified' stamp: 'gmcb 5/14/2022 22:02:49'!
 initializeWith: aStack
