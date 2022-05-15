@@ -156,9 +156,9 @@ test01SameSentenceWithDifferentCaseShouldNotMatch
 	
 	! !
 
-!SentenceFinderByPrefixTest methodsFor: 'tests' stamp: 'gmcb 5/15/2022 00:26:35'!
+!SentenceFinderByPrefixTest methodsFor: 'tests' stamp: 'smb 5/15/2022 00:38:21'!
 test02TheWordShouldBeFindOnce
-	| stack string sentence1 sentence2 sentence3 finder |
+	| stack string sentence1 sentence2 sentence3 finder oc|
 	stack := OOStack new.
 	string := 'please'.
 	sentence1 := 'please approve our exercise :)'.
@@ -170,8 +170,117 @@ test02TheWordShouldBeFindOnce
 	stack push: sentence3.
 
 	finder := SentenceFinderByPrefix initializeWith: stack.
-	self assert: (finder find: string) size = 1.
-	self assert: ((finder find: string) at:1) = sentence1.	
+	oc := finder find: string.
+	self assert: oc size equals: 1.
+	self assert: (oc at:1) = sentence1.	
+	! !
+
+!SentenceFinderByPrefixTest methodsFor: 'tests' stamp: 'smb 5/15/2022 00:40:06'!
+test03TheSentenceBeginsWithSpaces
+	| stack string sentence1 sentence2 sentence3 finder oc|
+	stack := OOStack new.
+	string := 'please'.
+	sentence1 := '   please approve our exercise :)'.
+	sentence2 := 'Approve our exercise :)'.
+	sentence3 := 'our exercise :)'.
+
+	stack push: sentence1 .
+	stack push: sentence2 .
+	stack push: sentence3.
+
+	finder := SentenceFinderByPrefix initializeWith: stack.
+	oc := finder find: string.
+	self assert: oc size equals: 0.
+	
+	! !
+
+!SentenceFinderByPrefixTest methodsFor: 'tests' stamp: 'smb 5/15/2022 00:40:45'!
+test04TheSentenceDoNotBeginsWithTheWord
+	| stack string sentence1 sentence2 sentence3 finder oc|
+	stack := OOStack new.
+	string := 'please'.
+	sentence1 := '   please approve our exercise :)'.
+	sentence2 := 'Approve our exercise :)'.
+	sentence3 := 'our exercise :)'.
+
+	stack push: sentence1 .
+	stack push: sentence2 .
+	stack push: sentence3.
+
+	finder := SentenceFinderByPrefix initializeWith: stack.
+	oc := finder find: string.
+	self assert: oc size equals: 0.
+	
+	! !
+
+!SentenceFinderByPrefixTest methodsFor: 'tests' stamp: 'smb 5/15/2022 00:46:30'!
+test05ThereIsTwoSentenceWithTheSearchedWord
+	| stack string sentence1 sentence2 sentence3 finder oc assertOC |
+	stack := OOStack new.
+	string := 'please'.
+	sentence1 := 'please approve our exercise :)'.
+	sentence2 := 'please approve this exercise'.
+	sentence3 := 'our exercise :)'.
+
+	stack push: sentence1 .
+	stack push: sentence2 .
+	stack push: sentence3.
+
+	finder := SentenceFinderByPrefix initializeWith: stack.
+	oc := finder find: string.
+	assertOC := OrderedCollection new.
+	assertOC add: sentence2 .
+	assertOC add: sentence1 .	
+	self assert: oc size equals: 2.
+	self assert: oc = oc.
+	
+	! !
+
+!SentenceFinderByPrefixTest methodsFor: 'tests' stamp: 'smb 5/15/2022 01:02:39'!
+test06CrashesIfThePrefixBeginsWithASpace
+	| stack string finder |
+	stack := OOStack new.
+	string := ' please'.
+	finder := SentenceFinderByPrefix initializeWith: stack.	
+	
+	self 
+		should: [ finder find: string.]
+		raise: Error
+		withExceptionDo: [ :anError | self assert: SentenceFinderByPrefix erroPrefixCanNotBegginWithASpace equals: anError messageText ]! !
+
+!SentenceFinderByPrefixTest methodsFor: 'tests' stamp: 'smb 5/15/2022 01:10:42'!
+test07StacksElementStayInSameOrder
+	| stack stack2 string sentence1 sentence2 sentence3 finder |
+	stack := OOStack new.
+	string := 'please'.
+	sentence1 := 'please approve our exercise :)'.
+	sentence2 := 'please approve this exercise'.
+	sentence3 := 'our exercise :)'.
+
+	stack push: sentence1 .
+	stack push: sentence2 .
+	stack push: sentence3.
+
+	finder := SentenceFinderByPrefix initializeWith: stack.
+	finder find: string.
+
+	stack2 := OOStack new.
+	stack2 push: sentence1 .
+	stack2 push: sentence2 .
+	stack2 push: sentence3.
+
+	self assert: stack size equals: stack2 size	.
+	[stack isEmpty] whileFalse: [		self assert: stack pop equals: stack2 pop.	].! !
+
+!SentenceFinderByPrefixTest methodsFor: 'tests' stamp: 'smb 5/15/2022 01:14:14'!
+test08FindNothingWithAEmptyStack
+	| stack string finder oc|
+	stack := OOStack new.
+	string := 'please'.
+	finder := SentenceFinderByPrefix initializeWith: stack.
+	oc := finder find: string.
+	
+	self assert: oc size equals: 0.
 	! !
 
 
@@ -236,13 +345,15 @@ Object subclass: #SentenceFinderByPrefix
 	poolDictionaries: ''
 	category: 'Stack-Exercise'!
 
-!SentenceFinderByPrefix methodsFor: 'as yet unclassified' stamp: 'gmcb 5/15/2022 00:17:53'!
+!SentenceFinderByPrefix methodsFor: 'as yet unclassified' stamp: 'smb 5/15/2022 01:02:39'!
 find: aString
 	| foundStrings actualString |
+	
+	(aString beginsWith: ' ') ifTrue: [self error: SentenceFinderByPrefix erroPrefixCanNotBegginWithASpace ].
 	foundStrings := OrderedCollection new.
 	[stack isEmpty] whileFalse: 		[
-			actualString := stack pop.
-			(self mmm: aString isPrefixOf: actualString) = 1 ifTrue: 		[foundStrings add: actualString].
+			actualString := stack pop.					
+			(actualString beginsWith: aString) ifTrue: 		[foundStrings add: actualString].			
 			auxiliarStack push: actualString.			
 	].
 	[auxiliarStack isEmpty] whileFalse: [
@@ -250,16 +361,6 @@ find: aString
 		stack push: actualString.
 	].
 	^foundStrings.! !
-
-!SentenceFinderByPrefix methodsFor: 'as yet unclassified' stamp: 'gmcb 5/14/2022 23:43:00'!
-mmm: string
-! !
-
-!SentenceFinderByPrefix methodsFor: 'as yet unclassified' stamp: 'gmcb 5/15/2022 00:09:13'!
-mmm: aString isPrefixOf: anotherString
-	^(anotherString findString: aString)  = 1.
-
-! !
 
 
 !SentenceFinderByPrefix methodsFor: 'initialization' stamp: 'gmcb 5/14/2022 20:27:42'!
@@ -276,6 +377,10 @@ setStack: aStack
 !classDefinition: 'SentenceFinderByPrefix class' category: 'Stack-Exercise'!
 SentenceFinderByPrefix class
 	instanceVariableNames: ''!
+
+!SentenceFinderByPrefix class methodsFor: 'as yet unclassified' stamp: 'smb 5/15/2022 01:02:39'!
+erroPrefixCanNotBegginWithASpace
+	^'A prefix can not beggin with a space'! !
 
 !SentenceFinderByPrefix class methodsFor: 'as yet unclassified' stamp: 'gmcb 5/14/2022 22:02:49'!
 initializeWith: aStack
