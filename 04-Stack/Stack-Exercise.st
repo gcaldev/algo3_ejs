@@ -180,7 +180,7 @@ test10CanNotTopWhenThereAreNoObjectsInTheStack
 
 !classDefinition: #SentenceFinderByPrefixTest category: 'Stack-Exercise'!
 TestCase subclass: #SentenceFinderByPrefixTest
-	instanceVariableNames: 'emptyStack stackWithOneElement stackWithThereeElements testSentence1 testSentence2 testSentence3 testSentence4 stringd2 testSentence5 stackWithASentenceThatBeginsWithSpaces testSentence6 stackWithTwoMatchedPrefix stackWithTwoMatchedPrefixCopy prefixWithSpaceInTheMiddle emptyPrefix prefixWithAStartingSpace prefixInTheMiddleOfSentence testingPrefix'
+	instanceVariableNames: 'emptyStack stackWithOneElement stackWithThereeElements testSentence1 testSentence2 testSentence3 testSentence4 testSentence5 stackWithASentenceThatBeginsWithSpaces testSentence6 stackWithTwoMatchedPrefix stackWithTwoMatchedPrefixCopy prefixWithSpaceInTheMiddle emptyPrefix prefixWithAStartingSpace prefixInTheMiddleOfSentence testingPrefix'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Stack-Exercise'!
@@ -227,8 +227,8 @@ setUp
 	! !
 
 
-!SentenceFinderByPrefixTest methodsFor: 'test' stamp: 'gmcb 5/16/2022 00:48:24'!
-test01SameSentenceWithDifferentCaseShouldNotMatch
+!SentenceFinderByPrefixTest methodsFor: 'test' stamp: 'gmcb 5/16/2022 11:21:50'!
+test01SameSentenceWithDifferentTypecaseShouldNotMatch
 	| finder |
 
 	finder := SentenceFinderByPrefix initializeWith: stackWithOneElement.
@@ -236,8 +236,8 @@ test01SameSentenceWithDifferentCaseShouldNotMatch
 	
 	! !
 
-!SentenceFinderByPrefixTest methodsFor: 'test' stamp: 'gmcb 5/16/2022 00:50:40'!
-test02TheWordShouldBeFindOnce
+!SentenceFinderByPrefixTest methodsFor: 'test' stamp: 'gmcb 5/16/2022 11:13:19'!
+test02ThePrefixShouldBeFoundOnce
 	| finder foundSentences |
 
 	finder := SentenceFinderByPrefix initializeWith: stackWithThereeElements.
@@ -257,8 +257,8 @@ test03TheSentenceBeginsWithSpaces
 	
 	! !
 
-!SentenceFinderByPrefixTest methodsFor: 'test' stamp: 'gmcb 5/16/2022 00:50:58'!
-test04TheSentenceDoNotBeginsWithTheWord
+!SentenceFinderByPrefixTest methodsFor: 'test' stamp: 'gmcb 5/16/2022 11:15:47'!
+test04TheSentenceDoesNotBeginWithThePrefix
 	| finder foundSentences|
 
 	finder := SentenceFinderByPrefix initializeWith: stackWithThereeElements.
@@ -267,8 +267,8 @@ test04TheSentenceDoNotBeginsWithTheWord
 	
 	! !
 
-!SentenceFinderByPrefixTest methodsFor: 'test' stamp: 'gmcb 5/16/2022 00:52:02'!
-test05ThereIsTwoSentenceWithTheSearchedWord
+!SentenceFinderByPrefixTest methodsFor: 'test' stamp: 'gmcb 5/16/2022 11:22:32'!
+test05TwoSentencesBeginsWithThePrefix
 	| finder foundSentences expectedSentences |
 
 
@@ -282,28 +282,8 @@ test05ThereIsTwoSentenceWithTheSearchedWord
 	
 	! !
 
-!SentenceFinderByPrefixTest methodsFor: 'test' stamp: 'gmcb 5/16/2022 00:45:12'!
-test06CrashesIfThePrefixBeginsWithASpace
-	| finder |
-	finder := SentenceFinderByPrefix initializeWith: stackWithOneElement.	
-	
-	self 
-		should: [ finder find: prefixWithAStartingSpace.]
-		raise: Error
-		withExceptionDo: [ :anError | self assert: SentenceFinderByPrefix errorPrefixCanNotContainSpaces equals: anError messageText ]! !
-
-!SentenceFinderByPrefixTest methodsFor: 'test' stamp: 'gmcb 5/16/2022 00:48:37'!
-test07StacksElementStayInSameOrder
-	| finder |
-
-	finder := SentenceFinderByPrefix initializeWith: stackWithTwoMatchedPrefix .
-	finder find: testingPrefix .
-
-	self assert: stackWithTwoMatchedPrefix size equals: stackWithTwoMatchedPrefixCopy size	.
-	[stackWithTwoMatchedPrefix isEmpty] whileFalse: [		self assert: stackWithTwoMatchedPrefix pop equals: stackWithTwoMatchedPrefixCopy pop.	].! !
-
-!SentenceFinderByPrefixTest methodsFor: 'test' stamp: 'gmcb 5/16/2022 00:52:16'!
-test08FindNothingWithAEmptyStack
+!SentenceFinderByPrefixTest methodsFor: 'test' stamp: 'gmcb 5/16/2022 11:26:08'!
+test06NothingIsFoundInAnEmptyStack
 	| finder foundSentences |
 	finder := SentenceFinderByPrefix initializeWith: emptyStack .
 	foundSentences := finder find: testingPrefix .
@@ -311,8 +291,8 @@ test08FindNothingWithAEmptyStack
 	self assert: foundSentences size equals: 0.
 	! !
 
-!SentenceFinderByPrefixTest methodsFor: 'test' stamp: 'gmcb 5/16/2022 00:43:53'!
-test09CrashesSearchingAEmptyPrefix
+!SentenceFinderByPrefixTest methodsFor: 'test' stamp: 'gmcb 5/16/2022 11:26:15'!
+test07CanNotUseAnEmptyPrefix
 	| finder |
 	finder := SentenceFinderByPrefix initializeWith: emptyStack.	
 	
@@ -321,8 +301,18 @@ test09CrashesSearchingAEmptyPrefix
 		raise: Error
 		withExceptionDo: [ :anError | self assert: SentenceFinderByPrefix errorEmptyPrefix equals: anError messageText ]! !
 
-!SentenceFinderByPrefixTest methodsFor: 'test' stamp: 'gmcb 5/16/2022 00:43:03'!
-test10CrashesIfThePrefixContainsASpace
+!SentenceFinderByPrefixTest methodsFor: 'test' stamp: 'gmcb 5/16/2022 11:26:22'!
+test08CanNotUseAPrefixBeginingWithEmptySpace
+	| finder |
+	finder := SentenceFinderByPrefix initializeWith: stackWithOneElement.	
+	
+	self 
+		should: [ finder find: prefixWithAStartingSpace.]
+		raise: Error
+		withExceptionDo: [ :anError | self assert: SentenceFinderByPrefix errorPrefixCanNotContainSpaces equals: anError messageText ]! !
+
+!SentenceFinderByPrefixTest methodsFor: 'test' stamp: 'gmcb 5/16/2022 11:26:28'!
+test09CanNotUseAPrefixThatContainsASpace
 	| finder |
 	
 	finder := SentenceFinderByPrefix initializeWith: emptyStack .	
@@ -331,6 +321,16 @@ test10CrashesIfThePrefixContainsASpace
 		should: [ finder find: prefixWithSpaceInTheMiddle .]
 		raise: Error
 		withExceptionDo: [ :anError | self assert: SentenceFinderByPrefix errorPrefixCanNotContainSpaces equals: anError messageText ]! !
+
+!SentenceFinderByPrefixTest methodsFor: 'test' stamp: 'gmcb 5/16/2022 11:25:24'!
+test10StackElementsStaysInSameOrder
+	| finder |
+
+	finder := SentenceFinderByPrefix initializeWith: stackWithTwoMatchedPrefix .
+	finder find: testingPrefix .
+
+	self assert: stackWithTwoMatchedPrefix size equals: stackWithTwoMatchedPrefixCopy size	.
+	[stackWithTwoMatchedPrefix isEmpty] whileFalse: [		self assert: stackWithTwoMatchedPrefix pop equals: stackWithTwoMatchedPrefixCopy pop.	].! !
 
 
 !classDefinition: #OOStack category: 'Stack-Exercise'!
