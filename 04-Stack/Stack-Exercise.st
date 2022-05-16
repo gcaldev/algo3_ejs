@@ -180,12 +180,12 @@ test10CanNotTopWhenThereAreNoObjectsInTheStack
 
 !classDefinition: #SentenceFinderByPrefixTest category: 'Stack-Exercise'!
 TestCase subclass: #SentenceFinderByPrefixTest
-	instanceVariableNames: 'emptyStack stackWithOneElement stackWithThereeElements testSentence1 testSentence2 testSentence3 testSentence4 testSentence5 stackWithASentenceThatBeginsWithSpaces testSentence6 stackWithTwoMatchedPrefix stackWithTwoMatchedPrefixCopy prefixWithSpaceInTheMiddle emptyPrefix prefixWithAStartingSpace prefixInTheMiddleOfSentence testingPrefix'
+	instanceVariableNames: 'emptyStack stackWithOneElement testSentence1 testSentence2 testSentence3 testSentence4 testSentence5 stackWithASentenceThatBeginsWithSpaces testSentence6 stackWithTwoMatchedPrefix stackWithTwoMatchedPrefixCopy prefixWithSpaceInTheMiddle emptyPrefix prefixWithAStartingSpace prefixInTheMiddleOfSentence testingPrefix stackWithThreeElements'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Stack-Exercise'!
 
-!SentenceFinderByPrefixTest methodsFor: 'setup' stamp: 'gmcb 5/16/2022 00:49:59'!
+!SentenceFinderByPrefixTest methodsFor: 'setup' stamp: 'gmcb 5/16/2022 11:38:49'!
 setUp
 	
 	emptyStack := OOStack new.
@@ -205,10 +205,10 @@ setUp
 	stackWithOneElement := OOStack new.
 	stackWithOneElement push: testSentence1.
 	
-	stackWithThereeElements := OOStack new.
-	stackWithThereeElements push: testSentence2.
-	stackWithThereeElements push: testSentence3.
-	stackWithThereeElements push: testSentence4.
+	stackWithThreeElements := OOStack new.
+	stackWithThreeElements push: testSentence2.
+	stackWithThreeElements push: testSentence3.
+	stackWithThreeElements push: testSentence4.
 	
 	stackWithASentenceThatBeginsWithSpaces := OOStack new.
 	stackWithASentenceThatBeginsWithSpaces push: testSentence3.
@@ -236,11 +236,11 @@ test01SameSentenceWithDifferentTypecaseShouldNotMatch
 	
 	! !
 
-!SentenceFinderByPrefixTest methodsFor: 'test' stamp: 'gmcb 5/16/2022 11:13:19'!
+!SentenceFinderByPrefixTest methodsFor: 'test' stamp: 'gmcb 5/16/2022 11:39:15'!
 test02ThePrefixShouldBeFoundOnce
 	| finder foundSentences |
 
-	finder := SentenceFinderByPrefix initializeWith: stackWithThereeElements.
+	finder := SentenceFinderByPrefix initializeWith: stackWithThreeElements.
 	foundSentences := finder find: testingPrefix .
 	self assert: foundSentences size equals: 1.
 	self assert: (foundSentences at:1) = testSentence2.	
@@ -257,11 +257,11 @@ test03TheSentenceBeginsWithSpaces
 	
 	! !
 
-!SentenceFinderByPrefixTest methodsFor: 'test' stamp: 'gmcb 5/16/2022 11:15:47'!
+!SentenceFinderByPrefixTest methodsFor: 'test' stamp: 'gmcb 5/16/2022 11:39:21'!
 test04TheSentenceDoesNotBeginWithThePrefix
 	| finder foundSentences|
 
-	finder := SentenceFinderByPrefix initializeWith: stackWithThereeElements.
+	finder := SentenceFinderByPrefix initializeWith: stackWithThreeElements.
 	foundSentences := finder find: prefixInTheMiddleOfSentence.
 	self assert: foundSentences size equals: 0.
 	
