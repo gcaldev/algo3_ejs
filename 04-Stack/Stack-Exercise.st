@@ -139,19 +139,31 @@ test10CanNotTopWhenThereAreNoObjectsInTheStack
 
 !classDefinition: #SentenceFinderByPrefixTest category: 'Stack-Exercise'!
 TestCase subclass: #SentenceFinderByPrefixTest
-	instanceVariableNames: ''
+	instanceVariableNames: 'emptyStack stackWithOneElement stackWithThereeElements'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Stack-Exercise'!
 
-!SentenceFinderByPrefixTest methodsFor: 'tests' stamp: 'gmcb 5/15/2022 00:16:25'!
+!SentenceFinderByPrefixTest methodsFor: 'setup' stamp: 'smb 5/15/2022 21:18:25'!
+setUp
+	
+	emptyStack := OOStack new.
+	
+	stackWithOneElement := OOStack new.
+	stackWithOneElement push: 'Please approve our exercise :)'.
+	
+	stackWithThereeElements := OOStack new.
+	stackWithThereeElements push: 'please approve our exercise :)'.
+	stackWithThereeElements push: 'Approve our exercise :)'.
+	stackWithThereeElements push: 'our exercise :)'.! !
+
+
+!SentenceFinderByPrefixTest methodsFor: 'tests' stamp: 'smb 5/15/2022 21:16:39'!
 test01SameSentenceWithDifferentCaseShouldNotMatch
-	| stack string stringWithUpperCase finder |
-	stack := OOStack new.
+	| string finder |
+	
 	string := 'please'.
-	stringWithUpperCase := 'Please approve our exercise :)'.
-	stack push: stringWithUpperCase.
-	finder := SentenceFinderByPrefix initializeWith: stack.
+	finder := SentenceFinderByPrefix initializeWith: stackWithOneElement.
 	self assert: (finder find: string) isEmpty.
 	
 	! !
@@ -272,12 +284,11 @@ test07StacksElementStayInSameOrder
 	self assert: stack size equals: stack2 size	.
 	[stack isEmpty] whileFalse: [		self assert: stack pop equals: stack2 pop.	].! !
 
-!SentenceFinderByPrefixTest methodsFor: 'tests' stamp: 'smb 5/15/2022 01:14:14'!
+!SentenceFinderByPrefixTest methodsFor: 'tests' stamp: 'smb 5/15/2022 21:14:09'!
 test08FindNothingWithAEmptyStack
-	| stack string finder oc|
-	stack := OOStack new.
+	| string finder oc|
 	string := 'please'.
-	finder := SentenceFinderByPrefix initializeWith: stack.
+	finder := SentenceFinderByPrefix initializeWith: emptyStack .
 	oc := finder find: string.
 	
 	self assert: oc size equals: 0.
@@ -379,24 +390,32 @@ Object subclass: #SentenceFinderByPrefix
 	poolDictionaries: ''
 	category: 'Stack-Exercise'!
 
-!SentenceFinderByPrefix methodsFor: 'as yet unclassified' stamp: 'gmcb 5/15/2022 16:36:22'!
+!SentenceFinderByPrefix methodsFor: 'as yet unclassified' stamp: 'smb 5/15/2022 20:46:22'!
+checkAPrefixIsValid: aPrefix
+	(aPrefix includesSubString: ' ') ifTrue: [self error: SentenceFinderByPrefix errorPrefixCanNotContainSpaces ].
+	(aPrefix isEmpty) ifTrue: [self error: SentenceFinderByPrefix errorEmptyPrefix ].! !
+
+!SentenceFinderByPrefix methodsFor: 'as yet unclassified' stamp: 'smb 5/15/2022 21:06:12'!
 find: aString
 	| foundStrings actualString |
 	
-	(aString includesSubString: ' ') ifTrue: [self error: SentenceFinderByPrefix errorPrefixCanNotContainSpaces ].
-	(aString isEmpty) ifTrue: [self error: SentenceFinderByPrefix errorEmptyPrefix ].
-	
+	self checkAPrefixIsValid: aString.
 	foundStrings := OrderedCollection new.
 	[stack isEmpty] whileFalse: 		[
 			actualString := stack pop.					
 			(actualString beginsWith: aString) ifTrue: 		[foundStrings add: actualString].			
 			auxiliarStack push: actualString.			
 	].
-	[auxiliarStack isEmpty] whileFalse: [
-		actualString := auxiliarStack pop.
-		stack push: actualString.
-	].
+	self takeOffAllElementsOfStack: auxiliarStack andPushThemInto: stack.
 	^foundStrings.! !
+
+!SentenceFinderByPrefix methodsFor: 'as yet unclassified' stamp: 'smb 5/15/2022 20:57:52'!
+takeOffAllElementsOfStack: aOOStack andPushThemInto: anotherOOStack
+	| actualString |
+	[aOOStack isEmpty] whileFalse: [ 
+		actualString := aOOStack pop.
+		anotherOOStack push: actualString.
+	].! !
 
 
 !SentenceFinderByPrefix methodsFor: 'initialization' stamp: 'gmcb 5/14/2022 20:27:42'!
@@ -413,6 +432,10 @@ setStack: aStack
 !classDefinition: 'SentenceFinderByPrefix class' category: 'Stack-Exercise'!
 SentenceFinderByPrefix class
 	instanceVariableNames: ''!
+
+!SentenceFinderByPrefix class methodsFor: 'as yet unclassified' stamp: 'smb 5/15/2022 01:02:39'!
+erroPrefixCanNotBegginWithASpace
+	^'A prefix can not beggin with a space'! !
 
 !SentenceFinderByPrefix class methodsFor: 'as yet unclassified' stamp: 'smb 5/15/2022 11:34:38'!
 errorEmptyPrefix
