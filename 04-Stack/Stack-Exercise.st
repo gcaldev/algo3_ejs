@@ -1,3 +1,44 @@
+!classDefinition: #OOLimitedStackTest category: 'Stack-Exercise'!
+TestCase subclass: #OOLimitedStackTest
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Stack-Exercise'!
+
+!OOLimitedStackTest methodsFor: 'test' stamp: 'gmcb 5/16/2022 00:34:57'!
+test01CanNotPushMoreElementsThanCapacity
+	| limitedStack |
+	limitedStack := OOLimitedStack initializeWith: 3.
+	limitedStack push: 'please'.
+	limitedStack push: 'approve'.
+	limitedStack push: 'our'.
+
+	self
+		should: [ 	limitedStack push: 'exercise'.]
+		raise: Error
+		withExceptionDo: [ :anError |
+			self assert: anError messageText = OOLimitedStack stackCanNotStoreMoreElements ].
+		! !
+
+!OOLimitedStackTest methodsFor: 'test' stamp: 'gmcb 5/16/2022 00:35:10'!
+test02ReachTheLimitPopAnElementAndPushMoreElements
+	| limitedStack |
+	limitedStack := OOLimitedStack initializeWith: 3.
+	limitedStack push: 'please'.
+	limitedStack push: 'approve'.
+	limitedStack push: 'our'.
+
+	limitedStack pop.
+	limitedStack push: 'exercise'.
+
+	self
+		should: [ 	limitedStack push: ':)'.]
+		raise: Error
+		withExceptionDo: [ :anError |
+			self assert: anError messageText = OOLimitedStack stackCanNotStoreMoreElements ].
+		! !
+
+
 !classDefinition: #OOStackTest category: 'Stack-Exercise'!
 TestCase subclass: #OOStackTest
 	instanceVariableNames: ''
@@ -139,194 +180,157 @@ test10CanNotTopWhenThereAreNoObjectsInTheStack
 
 !classDefinition: #SentenceFinderByPrefixTest category: 'Stack-Exercise'!
 TestCase subclass: #SentenceFinderByPrefixTest
-	instanceVariableNames: 'emptyStack stackWithOneElement stackWithThereeElements'
+	instanceVariableNames: 'emptyStack stackWithOneElement stackWithThereeElements testSentence1 testSentence2 testSentence3 testSentence4 stringd2 testSentence5 stackWithASentenceThatBeginsWithSpaces testSentence6 stackWithTwoMatchedPrefix stackWithTwoMatchedPrefixCopy prefixWithSpaceInTheMiddle emptyPrefix prefixWithAStartingSpace prefixInTheMiddleOfSentence testingPrefix'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Stack-Exercise'!
 
-!SentenceFinderByPrefixTest methodsFor: 'setup' stamp: 'smb 5/15/2022 21:18:25'!
+!SentenceFinderByPrefixTest methodsFor: 'setup' stamp: 'gmcb 5/16/2022 00:49:59'!
 setUp
 	
 	emptyStack := OOStack new.
+	testingPrefix := 'plea'.
+	prefixInTheMiddleOfSentence := 'exer'.
+	prefixWithAStartingSpace := ' plea'.
+	emptyPrefix := ''.
+	prefixWithSpaceInTheMiddle := 'ple as'.
 	
+	testSentence1 := 'Please approve our exercise :)'.
+	testSentence2 := 'please approve our exercise :)'.
+	testSentence3 := 'Approve our exercise :)'.
+	testSentence4 := 'our exercise :)'.
+	testSentence5 := '   please approve our exercise :)'.
+	testSentence6 := 'please approve this exercise'.
+
 	stackWithOneElement := OOStack new.
-	stackWithOneElement push: 'Please approve our exercise :)'.
+	stackWithOneElement push: testSentence1.
 	
 	stackWithThereeElements := OOStack new.
-	stackWithThereeElements push: 'please approve our exercise :)'.
-	stackWithThereeElements push: 'Approve our exercise :)'.
-	stackWithThereeElements push: 'our exercise :)'.! !
+	stackWithThereeElements push: testSentence2.
+	stackWithThereeElements push: testSentence3.
+	stackWithThereeElements push: testSentence4.
+	
+	stackWithASentenceThatBeginsWithSpaces := OOStack new.
+	stackWithASentenceThatBeginsWithSpaces push: testSentence3.
+	stackWithASentenceThatBeginsWithSpaces push: testSentence4.
+	stackWithASentenceThatBeginsWithSpaces push: testSentence5.
+	
+	stackWithTwoMatchedPrefix := OOStack new.
+	stackWithTwoMatchedPrefix push: testSentence2.
+	stackWithTwoMatchedPrefix push: testSentence4.
+	stackWithTwoMatchedPrefix push: testSentence6.
+	
+	stackWithTwoMatchedPrefixCopy := OOStack new.
+	stackWithTwoMatchedPrefixCopy push: testSentence2.
+	stackWithTwoMatchedPrefixCopy push: testSentence4.
+	stackWithTwoMatchedPrefixCopy push: testSentence6.
+	! !
 
 
-!SentenceFinderByPrefixTest methodsFor: 'tests' stamp: 'smb 5/15/2022 21:16:39'!
+!SentenceFinderByPrefixTest methodsFor: 'test' stamp: 'gmcb 5/16/2022 00:48:24'!
 test01SameSentenceWithDifferentCaseShouldNotMatch
-	| string finder |
-	
-	string := 'please'.
+	| finder |
+
 	finder := SentenceFinderByPrefix initializeWith: stackWithOneElement.
-	self assert: (finder find: string) isEmpty.
+	self assert: (finder find: testingPrefix) isEmpty.
 	
 	! !
 
-!SentenceFinderByPrefixTest methodsFor: 'tests' stamp: 'smb 5/15/2022 00:38:21'!
+!SentenceFinderByPrefixTest methodsFor: 'test' stamp: 'gmcb 5/16/2022 00:50:40'!
 test02TheWordShouldBeFindOnce
-	| stack string sentence1 sentence2 sentence3 finder oc|
-	stack := OOStack new.
-	string := 'please'.
-	sentence1 := 'please approve our exercise :)'.
-	sentence2 := 'Approve our exercise :)'.
-	sentence3 := 'our exercise :)'.
+	| finder foundSentences |
 
-	stack push: sentence1 .
-	stack push: sentence2 .
-	stack push: sentence3.
-
-	finder := SentenceFinderByPrefix initializeWith: stack.
-	oc := finder find: string.
-	self assert: oc size equals: 1.
-	self assert: (oc at:1) = sentence1.	
+	finder := SentenceFinderByPrefix initializeWith: stackWithThereeElements.
+	foundSentences := finder find: testingPrefix .
+	self assert: foundSentences size equals: 1.
+	self assert: (foundSentences at:1) = testSentence2.	
 	! !
 
-!SentenceFinderByPrefixTest methodsFor: 'tests' stamp: 'smb 5/15/2022 00:40:06'!
+!SentenceFinderByPrefixTest methodsFor: 'test' stamp: 'gmcb 5/16/2022 00:50:49'!
 test03TheSentenceBeginsWithSpaces
-	| stack string sentence1 sentence2 sentence3 finder oc|
-	stack := OOStack new.
-	string := 'please'.
-	sentence1 := '   please approve our exercise :)'.
-	sentence2 := 'Approve our exercise :)'.
-	sentence3 := 'our exercise :)'.
+	| finder foundSentences |
 
-	stack push: sentence1 .
-	stack push: sentence2 .
-	stack push: sentence3.
-
-	finder := SentenceFinderByPrefix initializeWith: stack.
-	oc := finder find: string.
-	self assert: oc size equals: 0.
+	
+	finder := SentenceFinderByPrefix initializeWith: stackWithASentenceThatBeginsWithSpaces .
+	foundSentences := finder find: testingPrefix.
+	self assert: foundSentences size equals: 0.
 	
 	! !
 
-!SentenceFinderByPrefixTest methodsFor: 'tests' stamp: 'smb 5/15/2022 11:06:32'!
+!SentenceFinderByPrefixTest methodsFor: 'test' stamp: 'gmcb 5/16/2022 00:50:58'!
 test04TheSentenceDoNotBeginsWithTheWord
-	| stack string sentence1 sentence2 sentence3 finder oc|
-	stack := OOStack new.
-	string := 'exercise'.
-	sentence1 := 'please approve our exercise :)'.
-	sentence2 := 'Approve our exercise :)'.
-	sentence3 := 'our exercise :)'.
+	| finder foundSentences|
 
-	stack push: sentence1 .
-	stack push: sentence2 .
-	stack push: sentence3.
-
-	finder := SentenceFinderByPrefix initializeWith: stack.
-	oc := finder find: string.
-	self assert: oc size equals: 0.
+	finder := SentenceFinderByPrefix initializeWith: stackWithThereeElements.
+	foundSentences := finder find: prefixInTheMiddleOfSentence.
+	self assert: foundSentences size equals: 0.
 	
 	! !
 
-!SentenceFinderByPrefixTest methodsFor: 'tests' stamp: 'smb 5/15/2022 00:46:30'!
+!SentenceFinderByPrefixTest methodsFor: 'test' stamp: 'gmcb 5/16/2022 00:52:02'!
 test05ThereIsTwoSentenceWithTheSearchedWord
-	| stack string sentence1 sentence2 sentence3 finder oc assertOC |
-	stack := OOStack new.
-	string := 'please'.
-	sentence1 := 'please approve our exercise :)'.
-	sentence2 := 'please approve this exercise'.
-	sentence3 := 'our exercise :)'.
+	| finder foundSentences expectedSentences |
 
-	stack push: sentence1 .
-	stack push: sentence2 .
-	stack push: sentence3.
 
-	finder := SentenceFinderByPrefix initializeWith: stack.
-	oc := finder find: string.
-	assertOC := OrderedCollection new.
-	assertOC add: sentence2 .
-	assertOC add: sentence1 .	
-	self assert: oc size equals: 2.
-	self assert: oc = oc.
+	finder := SentenceFinderByPrefix initializeWith: stackWithTwoMatchedPrefix .
+	foundSentences := finder find: testingPrefix.
+	expectedSentences := OrderedCollection new.
+	expectedSentences add: testSentence2.
+	expectedSentences add: testSentence6.	
+	self assert: foundSentences size equals: 2.
+	self assert: foundSentences = foundSentences.
 	
 	! !
 
-!SentenceFinderByPrefixTest methodsFor: 'tests' stamp: 'smb 5/15/2022 11:33:03'!
+!SentenceFinderByPrefixTest methodsFor: 'test' stamp: 'gmcb 5/16/2022 00:45:12'!
 test06CrashesIfThePrefixBeginsWithASpace
-	| stack string finder |
-	stack := OOStack new.
-	string := ' please'.
-	finder := SentenceFinderByPrefix initializeWith: stack.	
+	| finder |
+	finder := SentenceFinderByPrefix initializeWith: stackWithOneElement.	
 	
 	self 
-		should: [ finder find: string.]
+		should: [ finder find: prefixWithAStartingSpace.]
 		raise: Error
 		withExceptionDo: [ :anError | self assert: SentenceFinderByPrefix errorPrefixCanNotContainSpaces equals: anError messageText ]! !
 
-!SentenceFinderByPrefixTest methodsFor: 'tests' stamp: 'smb 5/15/2022 01:10:42'!
+!SentenceFinderByPrefixTest methodsFor: 'test' stamp: 'gmcb 5/16/2022 00:48:37'!
 test07StacksElementStayInSameOrder
-	| stack stack2 string sentence1 sentence2 sentence3 finder |
-	stack := OOStack new.
-	string := 'please'.
-	sentence1 := 'please approve our exercise :)'.
-	sentence2 := 'please approve this exercise'.
-	sentence3 := 'our exercise :)'.
+	| finder |
 
-	stack push: sentence1 .
-	stack push: sentence2 .
-	stack push: sentence3.
+	finder := SentenceFinderByPrefix initializeWith: stackWithTwoMatchedPrefix .
+	finder find: testingPrefix .
 
-	finder := SentenceFinderByPrefix initializeWith: stack.
-	finder find: string.
+	self assert: stackWithTwoMatchedPrefix size equals: stackWithTwoMatchedPrefixCopy size	.
+	[stackWithTwoMatchedPrefix isEmpty] whileFalse: [		self assert: stackWithTwoMatchedPrefix pop equals: stackWithTwoMatchedPrefixCopy pop.	].! !
 
-	stack2 := OOStack new.
-	stack2 push: sentence1 .
-	stack2 push: sentence2 .
-	stack2 push: sentence3.
-
-	self assert: stack size equals: stack2 size	.
-	[stack isEmpty] whileFalse: [		self assert: stack pop equals: stack2 pop.	].! !
-
-!SentenceFinderByPrefixTest methodsFor: 'tests' stamp: 'smb 5/15/2022 21:14:09'!
+!SentenceFinderByPrefixTest methodsFor: 'test' stamp: 'gmcb 5/16/2022 00:52:16'!
 test08FindNothingWithAEmptyStack
-	| string finder oc|
-	string := 'please'.
+	| finder foundSentences |
 	finder := SentenceFinderByPrefix initializeWith: emptyStack .
-	oc := finder find: string.
+	foundSentences := finder find: testingPrefix .
 	
-	self assert: oc size equals: 0.
+	self assert: foundSentences size equals: 0.
 	! !
 
-!SentenceFinderByPrefixTest methodsFor: 'tests' stamp: 'smb 5/15/2022 11:38:31'!
+!SentenceFinderByPrefixTest methodsFor: 'test' stamp: 'gmcb 5/16/2022 00:43:53'!
 test09CrashesSearchingAEmptyPrefix
-	| stack string finder |
-	stack := OOStack new.
-	string := ''.
-	finder := SentenceFinderByPrefix initializeWith: stack.	
+	| finder |
+	finder := SentenceFinderByPrefix initializeWith: emptyStack.	
 	
 	self 
-		should: [ finder find: string.]
+		should: [ finder find: emptyPrefix .]
 		raise: Error
 		withExceptionDo: [ :anError | self assert: SentenceFinderByPrefix errorEmptyPrefix equals: anError messageText ]! !
 
-!SentenceFinderByPrefixTest methodsFor: 'tests' stamp: 'smb 5/15/2022 11:39:43'!
+!SentenceFinderByPrefixTest methodsFor: 'test' stamp: 'gmcb 5/16/2022 00:43:03'!
 test10CrashesIfThePrefixContainsASpace
-	| stack string finder |
-	stack := OOStack new.
-	string := 'plea se'.
-	finder := SentenceFinderByPrefix initializeWith: stack.	
+	| finder |
+	
+	finder := SentenceFinderByPrefix initializeWith: emptyStack .	
 	
 	self 
-		should: [ finder find: string.]
+		should: [ finder find: prefixWithSpaceInTheMiddle .]
 		raise: Error
 		withExceptionDo: [ :anError | self assert: SentenceFinderByPrefix errorPrefixCanNotContainSpaces equals: anError messageText ]! !
-
-!SentenceFinderByPrefixTest methodsFor: 'tests' stamp: 'gmcb 5/15/2022 15:55:06'!
-test11WordSeparatedBySpacesIsNotConsidered
-	| stack string finder sentence1 |
-	stack := OOStack new.
-	string := 'please'.
-	sentence1 := 'p l e a s e approve our exercise :)'.
-	stack push: sentence1.
-	finder := SentenceFinderByPrefix initializeWith: stack.
-	self assert: 0 equals: (finder find: string) size.! !
 
 
 !classDefinition: #OOStack category: 'Stack-Exercise'!
@@ -383,6 +387,47 @@ stackEmptyErrorDescription
 	^'Stack is empty'.! !
 
 
+!classDefinition: #OOLimitedStack category: 'Stack-Exercise'!
+OOStack subclass: #OOLimitedStack
+	instanceVariableNames: 'capacity'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Stack-Exercise'!
+
+!OOLimitedStack methodsFor: 'initialization' stamp: 'gmcb 5/16/2022 00:10:41'!
+setCapacity: maxNumberOfElements
+	capacity := maxNumberOfElements.! !
+
+
+!OOLimitedStack methodsFor: 'stack-behaviour' stamp: 'gmcb 5/16/2022 00:14:55'!
+push: aStringToBeStored
+	| newTop |
+	(size = capacity)ifTrue: [self error: OOLimitedStack stackCanNotStoreMoreElements ].
+	
+	newTop := StackElement initializeWith: aStringToBeStored.
+	newTop beOver: topNode.
+	topNode := newTop.	
+	size := size + 1! !
+
+"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
+
+!classDefinition: 'OOLimitedStack class' category: 'Stack-Exercise'!
+OOLimitedStack class
+	instanceVariableNames: ''!
+
+!OOLimitedStack class methodsFor: 'initialization' stamp: 'gmcb 5/16/2022 00:10:59'!
+initializeWith: maxNumberOfElements
+	| limitedStack |
+	limitedStack := OOLimitedStack new.
+	limitedStack setCapacity: maxNumberOfElements.
+	^limitedStack.! !
+
+
+!OOLimitedStack class methodsFor: 'error descriptions' stamp: 'gmcb 5/16/2022 00:14:32'!
+stackCanNotStoreMoreElements
+	^ 'There is no more space to store an element.'! !
+
+
 !classDefinition: #SentenceFinderByPrefix category: 'Stack-Exercise'!
 Object subclass: #SentenceFinderByPrefix
 	instanceVariableNames: 'stack auxiliarStack'
@@ -390,32 +435,38 @@ Object subclass: #SentenceFinderByPrefix
 	poolDictionaries: ''
 	category: 'Stack-Exercise'!
 
-!SentenceFinderByPrefix methodsFor: 'as yet unclassified' stamp: 'smb 5/15/2022 20:46:22'!
+!SentenceFinderByPrefix methodsFor: 'private' stamp: 'smb 5/15/2022 20:46:22'!
 checkAPrefixIsValid: aPrefix
 	(aPrefix includesSubString: ' ') ifTrue: [self error: SentenceFinderByPrefix errorPrefixCanNotContainSpaces ].
 	(aPrefix isEmpty) ifTrue: [self error: SentenceFinderByPrefix errorEmptyPrefix ].! !
 
-!SentenceFinderByPrefix methodsFor: 'as yet unclassified' stamp: 'smb 5/15/2022 21:06:12'!
+!SentenceFinderByPrefix methodsFor: 'private' stamp: 'gmcb 5/15/2022 22:49:24'!
+emptyAuxiliarStackAndFillStack
+	| actualString |
+	[auxiliarStack isEmpty] whileFalse: [ 
+		actualString := auxiliarStack pop.
+		stack push: actualString.
+	].! !
+
+!SentenceFinderByPrefix methodsFor: 'private' stamp: 'gmcb 5/15/2022 23:05:40'!
+verifyThatSentencePrefixMatches: aPrefix AndAddItTo: anOrderCollection
+	| actualString |
+	
+	actualString := stack pop.					
+	(actualString beginsWith: aPrefix) ifTrue: 		[anOrderCollection add: actualString].			
+	auxiliarStack push: actualString.			! !
+
+
+!SentenceFinderByPrefix methodsFor: 'finder-behaviour' stamp: 'gmcb 5/15/2022 23:05:40'!
 find: aString
-	| foundStrings actualString |
+	| foundStrings |
 	
 	self checkAPrefixIsValid: aString.
 	foundStrings := OrderedCollection new.
-	[stack isEmpty] whileFalse: 		[
-			actualString := stack pop.					
-			(actualString beginsWith: aString) ifTrue: 		[foundStrings add: actualString].			
-			auxiliarStack push: actualString.			
-	].
-	self takeOffAllElementsOfStack: auxiliarStack andPushThemInto: stack.
+	[stack isEmpty] whileFalse: 		[self verifyThatSentencePrefixMatches: aString AndAddItTo: foundStrings].
+	
+	self emptyAuxiliarStackAndFillStack.
 	^foundStrings.! !
-
-!SentenceFinderByPrefix methodsFor: 'as yet unclassified' stamp: 'smb 5/15/2022 20:57:52'!
-takeOffAllElementsOfStack: aOOStack andPushThemInto: anotherOOStack
-	| actualString |
-	[aOOStack isEmpty] whileFalse: [ 
-		actualString := aOOStack pop.
-		anotherOOStack push: actualString.
-	].! !
 
 
 !SentenceFinderByPrefix methodsFor: 'initialization' stamp: 'gmcb 5/14/2022 20:27:42'!
