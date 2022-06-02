@@ -1,143 +1,104 @@
 !classDefinition: #MarsRoverTest category: 'MarsRoverExplorator'!
 TestCase subclass: #MarsRoverTest
-	instanceVariableNames: ''
+	instanceVariableNames: 'marsRover'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'MarsRoverExplorator'!
 
-!MarsRoverTest methodsFor: 'as yet unclassified' stamp: 'gmcb 6/1/2022 22:21:29'!
+!MarsRoverTest methodsFor: 'tests - private' stamp: 'smb 6/2/2022 01:03:33'!
+commands: aStringOfCommands toMarsRover: aMarsRover assertDirection: aSpectedMarsRoverDirection
+	aMarsRover executeCommands: aStringOfCommands .
+	self assert: aSpectedMarsRoverDirection equals: aMarsRover direction.! !
+
+!MarsRoverTest methodsFor: 'tests - private' stamp: 'smb 6/2/2022 01:06:19'!
+commands: aStringOfCommands toMarsRover: aMarsRover assertDirection: aSpectedMarsRoverDirection assertPosition: aSpectedPositionPoint
+	aMarsRover executeCommands: aStringOfCommands .
+	self assert: aSpectedMarsRoverDirection equals: aMarsRover direction.
+	self assert: aSpectedPositionPoint equals: aMarsRover position.! !
+
+!MarsRoverTest methodsFor: 'tests - private' stamp: 'smb 6/2/2022 01:01:06'!
+commands: aStringOfCommands toMarsRover: aMarsRover assertPosition: aSpectedPositionPoint
+	aMarsRover executeCommands: aStringOfCommands .
+	self assert: aSpectedPositionPoint equals: aMarsRover position.! !
+
+!MarsRoverTest methodsFor: 'tests - private' stamp: 'smb 6/2/2022 01:15:16'!
+setUp
+	marsRover := MarsRover new.! !
+
+
+!MarsRoverTest methodsFor: 'tests' stamp: 'smb 6/2/2022 01:15:16'!
 test01WhenIsCreatedItsPositionIsInitialPosition
-	| marsRover |
-	marsRover := MarsRover new.
 	self assert: 0@0 equals: marsRover position.! !
 
-!MarsRoverTest methodsFor: 'as yet unclassified' stamp: 'gmcb 6/1/2022 22:25:13'!
+!MarsRoverTest methodsFor: 'tests' stamp: 'smb 6/2/2022 01:15:16'!
 test02SendingAMovementCommandChangesItsInitialPosition
-	| marsRover |
-	marsRover := MarsRover new.
 	marsRover executeCommands: 'f'.
-	self deny: (0@0 = (marsRover position))! !
+	self deny: (0@0 = (marsRover  position))! !
 
-!MarsRoverTest methodsFor: 'as yet unclassified' stamp: 'gmcb 6/1/2022 22:25:45'!
+!MarsRoverTest methodsFor: 'tests' stamp: 'smb 6/2/2022 01:15:16'!
 test03WhenIsCreatedItsDirectionIsInitialDirection
-	| marsRover |
-	marsRover := MarsRover new.
-	self assert: EastDirection equals: marsRover direction.! !
+	self assert: EastDirection equals: marsRover  direction.! !
 
-!MarsRoverTest methodsFor: 'as yet unclassified' stamp: 'gmcb 6/1/2022 22:14:01'!
-test04
-	| marsRover |
-	marsRover := MarsRover new.
-	marsRover executeCommands: 'b'.
-	self assert: -1@0 equals: marsRover position.! !
+!MarsRoverTest methodsFor: 'tests' stamp: 'smb 6/2/2022 01:15:16'!
+test04ReceivingABackwardCommandMoveBackItsPosition
+	self commands: 'b' toMarsRover: marsRover  assertPosition: -1@0.! !
 
-!MarsRoverTest methodsFor: 'as yet unclassified' stamp: 'gmcb 6/1/2022 22:14:01'!
-test05
-	| marsRover |
-	marsRover := MarsRover new.
-	marsRover executeCommands: 'ffb'.
-	self assert: 1@0 equals: marsRover position.! !
+!MarsRoverTest methodsFor: 'tests' stamp: 'smb 6/2/2022 01:15:16'!
+test05ReceivingMultipleMovementsCommdansMovesItsPositionToRightPosition
+	self commands: 'ffb' toMarsRover: marsRover   assertPosition: 1@0.
+	! !
 
-!MarsRoverTest methodsFor: 'as yet unclassified' stamp: 'gmcb 6/1/2022 22:14:01'!
-test06
-	| marsRover |
-	marsRover := MarsRover new.
-	marsRover executeCommands: 'l'.
-	self assert: NorthDirection equals: marsRover direction.! !
+!MarsRoverTest methodsFor: 'tests' stamp: 'smb 6/2/2022 01:15:16'!
+test06ReceivingALeftRotateCommandRotatesItsDirectionOnePlaceToLeft
+	self commands: 'l' toMarsRover: marsRover   assertDirection: NorthDirection .! !
 
-!MarsRoverTest methodsFor: 'as yet unclassified' stamp: 'gmcb 6/1/2022 22:14:01'!
-test07
-	| marsRover |
-	marsRover := MarsRover new.
-	marsRover executeCommands: 'll'.
-	self assert: WestDirection equals: marsRover direction.! !
+!MarsRoverTest methodsFor: 'tests' stamp: 'smb 6/2/2022 01:15:16'!
+test07ReceivingVariousLeftRotateCommandsRotatesItsDirectionToTheCorrectDirection
+	self commands: 'll' toMarsRover: marsRover  assertDirection: WestDirection.! !
 
-!MarsRoverTest methodsFor: 'as yet unclassified' stamp: 'gmcb 6/1/2022 22:14:01'!
-test08
-	| marsRover |
-	marsRover := MarsRover new.
-	marsRover executeCommands: 'r'.
-	self assert: SouthDirection equals: marsRover direction.! !
+!MarsRoverTest methodsFor: 'tests' stamp: 'smb 6/2/2022 01:15:16'!
+test08ReceivingARightRotateCommandRotatesItsDirectionOnePlaceToRight
+	self commands: 'r' toMarsRover: marsRover  assertDirection: SouthDirection .! !
 
-!MarsRoverTest methodsFor: 'as yet unclassified' stamp: 'gmcb 6/1/2022 22:14:01'!
-test09
-	| marsRover |
-	marsRover := MarsRover new.
-	marsRover executeCommands: 'rr'.
-	self assert: WestDirection equals: marsRover direction.! !
+!MarsRoverTest methodsFor: 'tests' stamp: 'smb 6/2/2022 01:15:16'!
+test09ReceivingVariousRightRotateCommandsRotatesItsDirectionToTheCorrectDirection
+	self commands: 'rr' toMarsRover: marsRover  assertDirection: WestDirection .! !
 
-!MarsRoverTest methodsFor: 'as yet unclassified' stamp: 'gmcb 6/1/2022 22:14:01'!
-test10
-	| marsRover |
-	marsRover := MarsRover new.
-	marsRover executeCommands: 'rf'.
-	self assert: SouthDirection equals: marsRover direction.
-	self assert: 0@-1 equals: marsRover position.
-! !
+!MarsRoverTest methodsFor: 'tests' stamp: 'smb 6/2/2022 01:15:16'!
+test10ReceivingARightRotatingAndAForwardCommandMovesItsPositionOnePlaceToSouthDirection
+	self commands: 'rf' toMarsRover: marsRover  assertDirection: SouthDirection assertPosition:  0@-1.! !
 
-!MarsRoverTest methodsFor: 'as yet unclassified' stamp: 'gmcb 6/1/2022 22:14:01'!
-test11
-	| marsRover |
-	marsRover := MarsRover new.
-	marsRover executeCommands: 'rrf'.
-	self assert: WestDirection equals: marsRover direction.
-	self assert: -1@0 equals: marsRover position.
-! !
+!MarsRoverTest methodsFor: 'tests' stamp: 'smb 6/2/2022 01:15:16'!
+test11ReceivingTwoRightRotatingAndAForwardCommandMovesItsPositionOnePlaceToWestDirection
+	self commands: 'rrf' toMarsRover: marsRover  assertDirection: WestDirection assertPosition: -1@0.! !
 
-!MarsRoverTest methodsFor: 'as yet unclassified' stamp: 'gmcb 6/1/2022 22:14:01'!
-test12
-	| marsRover |
-	marsRover := MarsRover new.
-	marsRover executeCommands: 'rrrf'.
-	self assert: NorthDirection equals: marsRover direction.
-	self assert: 0@1 equals: marsRover position.
-! !
+!MarsRoverTest methodsFor: 'tests' stamp: 'smb 6/2/2022 01:15:16'!
+test12ReceivingThreeRightRotatingAndAForwardCommandMovesItsPositionOnePlaceToNorthDirection
+	self commands: 'rrrf' toMarsRover: marsRover  assertDirection: NorthDirection assertPosition: 0@1.! !
 
-!MarsRoverTest methodsFor: 'as yet unclassified' stamp: 'gmcb 6/1/2022 22:14:01'!
-test13
-	| marsRover |
-	marsRover := MarsRover new.
-	marsRover executeCommands: 'rrrlf'.
-	self assert: WestDirection equals: marsRover direction.
-	self assert: -1@0 equals: marsRover position.
-! !
+!MarsRoverTest methodsFor: 'tests' stamp: 'smb 6/2/2022 01:15:16'!
+test13ReceivingThreeRightRotatingALeftRotationAndAForwardCommandMovesItsPositionOnePlaceToWestDirection
+	self commands: 'rrrlf' toMarsRover: marsRover  assertDirection: WestDirection assertPosition: -1@0.! !
 
-!MarsRoverTest methodsFor: 'as yet unclassified' stamp: 'gmcb 6/1/2022 22:14:01'!
-test14
-	| marsRover |
-	marsRover := MarsRover new.
-	marsRover executeCommands: 'lb'.
-	self assert: NorthDirection equals: marsRover direction.
-	self assert: 0@-1 equals: marsRover position.
-! !
+!MarsRoverTest methodsFor: 'tests' stamp: 'smb 6/2/2022 01:15:16'!
+test14ReceivingALeftRotatingAndABackwardsCommandMovesBackItsPositionOnePlaceToNorthDirection
+	self commands: 'lb' toMarsRover: marsRover   assertDirection: NorthDirection  assertPosition:  0@-1 .! !
 
-!MarsRoverTest methodsFor: 'as yet unclassified' stamp: 'gmcb 6/1/2022 22:14:01'!
-test15
-	| marsRover |
-	marsRover := MarsRover new.
-	marsRover executeCommands: 'llb'.
-	self assert: WestDirection equals: marsRover direction.
-	self assert: 1@0 equals: marsRover position.
-! !
+!MarsRoverTest methodsFor: 'tests' stamp: 'smb 6/2/2022 01:15:16'!
+test15ReceivingTwoLetftRotatingAndABackwardCommandMovesBackItsPositionOnePlaceToWestDirection
+	self commands: 'llb' toMarsRover: marsRover  assertDirection: WestDirection assertPosition: 1@0.! !
 
-!MarsRoverTest methodsFor: 'as yet unclassified' stamp: 'gmcb 6/1/2022 22:14:01'!
-test16
-	| marsRover |
-	marsRover := MarsRover new.
-	marsRover executeCommands: 'lllb'.
-	self assert: SouthDirection equals: marsRover direction.
-	self assert: 0@1 equals: marsRover position.
-! !
+!MarsRoverTest methodsFor: 'tests' stamp: 'smb 6/2/2022 01:15:16'!
+test16ReceivingThreeLeftRotatingAndABackwardCommandMovesBackItsPositionOnePlaceToSouthDirection
+	self commands: 'lllb' toMarsRover: marsRover  assertDirection: SouthDirection assertPosition:  0@1.! !
 
-!MarsRoverTest methodsFor: 'as yet unclassified' stamp: 'gmcb 6/1/2022 22:14:01'!
-test17
-	| marsRover |
-	marsRover := MarsRover new.
-	self should:[marsRover executeCommands: 'ffxbbbb']
+!MarsRoverTest methodsFor: 'tests' stamp: 'smb 6/2/2022 01:15:16'!
+test17ReceivingAInvalidCommandStopsCommandsExecution
+	self should:[marsRover  executeCommands: 'ffxbbbb']
 	raise: Error
 	withExceptionDo: [:anError |
 	self assert: MarsRover commandIsInvalid equals: anError messageText.
-	self assert: 2@0 equals: marsRover position.
+	self assert: 2@0 equals: marsRover  position.
 	]
 	! !
 
@@ -149,24 +110,13 @@ Object subclass: #MarsRover
 	poolDictionaries: ''
 	category: 'MarsRoverExplorator'!
 
-!MarsRover methodsFor: 'as yet unclassified' stamp: 'gmcb 6/1/2022 21:23:40'!
+!MarsRover methodsFor: 'placement' stamp: 'gmcb 6/1/2022 21:23:40'!
 direction
 	^direction class! !
 
-!MarsRover methodsFor: 'as yet unclassified' stamp: 'gmcb 6/1/2022 22:14:01'!
-executeCommands: aStringOfCommands
-
-	aStringOfCommands do: [:aCommand | 	self processCommand: aCommand.].! !
-
-!MarsRover methodsFor: 'as yet unclassified' stamp: 'gmcb 5/29/2022 18:48:00'!
+!MarsRover methodsFor: 'placement' stamp: 'gmcb 5/29/2022 18:48:00'!
 position
 	^position! !
-
-!MarsRover methodsFor: 'as yet unclassified' stamp: 'gmcb 6/1/2022 22:04:18'!
-processCommand: aCommand
-	| commandToExecute |
-	commandToExecute := commands at: aCommand ifAbsent: [self error: MarsRover commandIsInvalid].
-	commandToExecute value.! !
 
 
 !MarsRover methodsFor: 'initialization' stamp: 'gmcb 6/1/2022 22:10:43'!
@@ -174,6 +124,18 @@ initialize
 	position := 0@0.
 	direction := EastDirection new.
 	commands :=  Dictionary newFromPairs: {$f . [position := direction moveForward: position] . $b . [position := direction moveBackward: position] . $l . [direction := direction nextLeftDirection] . $r . [direction := direction nextRightDirection]}! !
+
+
+!MarsRover methodsFor: 'commands' stamp: 'gmcb 6/1/2022 22:14:01'!
+executeCommands: aStringOfCommands
+
+	aStringOfCommands do: [:aCommand | 	self processCommand: aCommand.].! !
+
+!MarsRover methodsFor: 'commands' stamp: 'gmcb 6/1/2022 22:04:18'!
+processCommand: aCommand
+	| commandToExecute |
+	commandToExecute := commands at: aCommand ifAbsent: [self error: MarsRover commandIsInvalid].
+	commandToExecute value.! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
@@ -193,20 +155,21 @@ Object subclass: #MarsRoverDirection
 	poolDictionaries: ''
 	category: 'MarsRoverExplorator'!
 
-!MarsRoverDirection methodsFor: 'as yet unclassified' stamp: 'gmcb 6/1/2022 21:39:23'!
-moveBackward: aPosition
-	self subclassResponsibility! !
-
-!MarsRoverDirection methodsFor: 'as yet unclassified' stamp: 'gmcb 6/1/2022 21:39:36'!
-moveForward: aPosition
-	self subclassResponsibility ! !
-
-!MarsRoverDirection methodsFor: 'as yet unclassified' stamp: 'gmcb 6/1/2022 21:39:52'!
+!MarsRoverDirection methodsFor: 'rotations' stamp: 'gmcb 6/1/2022 21:39:52'!
 nextLeftDirection
 	self subclassResponsibility ! !
 
-!MarsRoverDirection methodsFor: 'as yet unclassified' stamp: 'gmcb 6/1/2022 21:39:56'!
+!MarsRoverDirection methodsFor: 'rotations' stamp: 'gmcb 6/1/2022 21:39:56'!
 nextRightDirection
+	self subclassResponsibility ! !
+
+
+!MarsRoverDirection methodsFor: 'movements' stamp: 'gmcb 6/1/2022 21:39:23'!
+moveBackward: aPosition
+	self subclassResponsibility! !
+
+!MarsRoverDirection methodsFor: 'movements' stamp: 'gmcb 6/1/2022 21:39:36'!
+moveForward: aPosition
 	self subclassResponsibility ! !
 
 
@@ -217,21 +180,22 @@ MarsRoverDirection subclass: #EastDirection
 	poolDictionaries: ''
 	category: 'MarsRoverExplorator'!
 
-!EastDirection methodsFor: 'as yet unclassified' stamp: 'gmcb 5/31/2022 22:29:23'!
-moveBackward: aPosition
-	^aPosition + (-1@0)! !
-
-!EastDirection methodsFor: 'as yet unclassified' stamp: 'gmcb 5/31/2022 22:28:42'!
-moveForward: aPosition
-	^aPosition + (1@0)! !
-
-!EastDirection methodsFor: 'as yet unclassified' stamp: 'gmcb 6/1/2022 22:10:55'!
+!EastDirection methodsFor: 'rotations' stamp: 'gmcb 6/1/2022 22:10:55'!
 nextLeftDirection
 	^NorthDirection new! !
 
-!EastDirection methodsFor: 'as yet unclassified' stamp: 'gmcb 6/1/2022 22:11:03'!
+!EastDirection methodsFor: 'rotations' stamp: 'gmcb 6/1/2022 22:11:03'!
 nextRightDirection
 	^SouthDirection new! !
+
+
+!EastDirection methodsFor: 'movements' stamp: 'gmcb 5/31/2022 22:29:23'!
+moveBackward: aPosition
+	^aPosition + (-1@0)! !
+
+!EastDirection methodsFor: 'movements' stamp: 'gmcb 5/31/2022 22:28:42'!
+moveForward: aPosition
+	^aPosition + (1@0)! !
 
 
 !classDefinition: #NorthDirection category: 'MarsRoverExplorator'!
@@ -241,21 +205,22 @@ MarsRoverDirection subclass: #NorthDirection
 	poolDictionaries: ''
 	category: 'MarsRoverExplorator'!
 
-!NorthDirection methodsFor: 'as yet unclassified' stamp: 'gmcb 5/31/2022 22:29:46'!
-moveBackward: aPosition
-	^aPosition + (0@-1)! !
-
-!NorthDirection methodsFor: 'as yet unclassified' stamp: 'gmcb 5/31/2022 22:28:42'!
-moveForward: aPosition
-	^aPosition + (0@1)! !
-
-!NorthDirection methodsFor: 'as yet unclassified' stamp: 'gmcb 6/1/2022 22:11:11'!
+!NorthDirection methodsFor: 'rotations' stamp: 'gmcb 6/1/2022 22:11:11'!
 nextLeftDirection
 	^WestDirection new! !
 
-!NorthDirection methodsFor: 'as yet unclassified' stamp: 'gmcb 6/1/2022 22:10:43'!
+!NorthDirection methodsFor: 'rotations' stamp: 'gmcb 6/1/2022 22:10:43'!
 nextRightDirection
 	^EastDirection new! !
+
+
+!NorthDirection methodsFor: 'movements' stamp: 'gmcb 5/31/2022 22:29:46'!
+moveBackward: aPosition
+	^aPosition + (0@-1)! !
+
+!NorthDirection methodsFor: 'movements' stamp: 'gmcb 5/31/2022 22:28:42'!
+moveForward: aPosition
+	^aPosition + (0@1)! !
 
 
 !classDefinition: #SouthDirection category: 'MarsRoverExplorator'!
@@ -265,21 +230,22 @@ MarsRoverDirection subclass: #SouthDirection
 	poolDictionaries: ''
 	category: 'MarsRoverExplorator'!
 
-!SouthDirection methodsFor: 'as yet unclassified' stamp: 'gmcb 5/31/2022 22:29:01'!
-moveBackward: aPosition
-	^aPosition + (0@1)! !
-
-!SouthDirection methodsFor: 'as yet unclassified' stamp: 'gmcb 5/31/2022 22:28:42'!
-moveForward: aPosition
-	^aPosition + (0@-1)! !
-
-!SouthDirection methodsFor: 'as yet unclassified' stamp: 'gmcb 6/1/2022 22:10:43'!
+!SouthDirection methodsFor: 'rotations' stamp: 'gmcb 6/1/2022 22:10:43'!
 nextLeftDirection
 	^EastDirection new! !
 
-!SouthDirection methodsFor: 'as yet unclassified' stamp: 'gmcb 6/1/2022 22:11:11'!
+!SouthDirection methodsFor: 'rotations' stamp: 'gmcb 6/1/2022 22:11:11'!
 nextRightDirection
 	^WestDirection new! !
+
+
+!SouthDirection methodsFor: 'movements' stamp: 'gmcb 5/31/2022 22:29:01'!
+moveBackward: aPosition
+	^aPosition + (0@1)! !
+
+!SouthDirection methodsFor: 'movements' stamp: 'gmcb 5/31/2022 22:28:42'!
+moveForward: aPosition
+	^aPosition + (0@-1)! !
 
 
 !classDefinition: #WestDirection category: 'MarsRoverExplorator'!
@@ -289,18 +255,19 @@ MarsRoverDirection subclass: #WestDirection
 	poolDictionaries: ''
 	category: 'MarsRoverExplorator'!
 
-!WestDirection methodsFor: 'as yet unclassified' stamp: 'gmcb 5/31/2022 22:29:12'!
-moveBackward: aPosition
-	^aPosition + (1@0)! !
-
-!WestDirection methodsFor: 'as yet unclassified' stamp: 'gmcb 5/31/2022 22:28:42'!
-moveForward: aPosition
-	^aPosition + (-1@0)! !
-
-!WestDirection methodsFor: 'as yet unclassified' stamp: 'gmcb 6/1/2022 22:11:03'!
+!WestDirection methodsFor: 'rotations' stamp: 'gmcb 6/1/2022 22:11:03'!
 nextLeftDirection
 	^SouthDirection new! !
 
-!WestDirection methodsFor: 'as yet unclassified' stamp: 'gmcb 6/1/2022 22:10:55'!
+!WestDirection methodsFor: 'rotations' stamp: 'gmcb 6/1/2022 22:10:55'!
 nextRightDirection
 	^NorthDirection new! !
+
+
+!WestDirection methodsFor: 'movements' stamp: 'gmcb 5/31/2022 22:29:12'!
+moveBackward: aPosition
+	^aPosition + (1@0)! !
+
+!WestDirection methodsFor: 'movements' stamp: 'gmcb 5/31/2022 22:28:42'!
+moveForward: aPosition
+	^aPosition + (-1@0)! !
