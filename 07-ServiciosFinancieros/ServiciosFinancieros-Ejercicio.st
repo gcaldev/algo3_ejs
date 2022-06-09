@@ -183,58 +183,130 @@ test10PortfolioContainingAPortfolioWithMultipleAccountsProvidesTheirTransactions
 	self assert: totalTransactions equals: portfolio2 transactions! !
 
 
-!PortfolioTest methodsFor: 'tests-extra' stamp: 'gmcb 6/9/2022 00:23:57'!
-test11
-	| account1 account2 accountsOC portfolio |
+!PortfolioTest methodsFor: 'tests-extra' stamp: 'gmcb 6/9/2022 20:07:18'!
+test11AnAccountCanBeAddedAfterCreation
+	| account1 allTransactions transactions portfolio | 
 	account1 := ReceptiveAccount new.
-	account2 := ReceptiveAccount new.
+	transactions := Deposit register: 100 * peso on: account1.
+	allTransactions := OrderedCollection new.
+	allTransactions add: transactions .
+	portfolio := Portfolio with: OrderedCollection new.
+	portfolio addAccount: account1.
+	
+	self assert: allTransactions equals: portfolio transactions.! !
+
+!PortfolioTest methodsFor: 'tests-extra' stamp: 'gmcb 6/9/2022 20:08:08'!
+test12CanNotAddAnAccountThatIsAlreadyInPortfolio
+	| account1 accountsOC portfolio | 
+	account1 := ReceptiveAccount new.
 	accountsOC := OrderedCollection new.
 	accountsOC add: account1.
-
 	portfolio := Portfolio with: accountsOC.
-	portfolio addAccount: account2.
+	
+	self should:[portfolio addAccount: account1.]
+	raise: Error
+	withExceptionDo: [:anError | self assert: (Portfolio canNotAddAccount = anError messageText).]! !
 
-	self assert: (portfolio contains: account2).
-! !
+!PortfolioTest methodsFor: 'tests-extra' stamp: 'gmcb 6/9/2022 20:08:49'!
+test13CanNotAddAPortfolioToItself
+	| portfolio |
+	portfolio := Portfolio with: OrderedCollection new.
+	
+	self should:[portfolio addAccount: portfolio.]
+	raise: Error
+	withExceptionDo: [:anError | self assert: (Portfolio canNotAddAccount = anError messageText).]! !
 
-!PortfolioTest methodsFor: 'tests-extra' stamp: 'gmcb 6/9/2022 00:38:59'!
-test12
-	| account1 account2 account3 accountsOC1 accountsOC2 portfolio1 portfolio2 |
+!PortfolioTest methodsFor: 'tests-extra' stamp: 'gmcb 6/9/2022 20:10:11'!
+test14CanNotAddAnAccountThatIsAlreadyInAChildPortfolio
+	| account1 accountsOC1 accountsOC2 portfolio1 portfolio2 | 
 	account1 := ReceptiveAccount new.
-	account2 := ReceptiveAccount new.
-	account3 := ReceptiveAccount new.
 	accountsOC1 := OrderedCollection new.
 	accountsOC1 add: account1.
-	accountsOC2 := OrderedCollection new.
-	accountsOC2 add: account3.
-
 	portfolio1 := Portfolio with: accountsOC1.
-	portfolio1 addAccount: account2.
+	
+	accountsOC2 := OrderedCollection new.
+	accountsOC2 add: portfolio1. 
 	portfolio2 := Portfolio with: accountsOC2.
-	portfolio1 addAccount: portfolio2.
+	
+	self should:[portfolio2 addAccount: account1.]
+	raise: Error
+	withExceptionDo: [:anError | self assert: (Portfolio canNotAddAccount = anError messageText).]! !
 
-
-	self assert: (portfolio1 contains: account3 ).
-! !
-
-!PortfolioTest methodsFor: 'tests-extra' stamp: 'gmcb 6/9/2022 00:39:23'!
-test13
-	| account1 account2 account3 accountsOC1 accountsOC2 portfolio1 portfolio2 |
-	account1 := ReceptiveAccount new.
-	account2 := ReceptiveAccount new.
-	account3 := ReceptiveAccount new.
+!PortfolioTest methodsFor: 'tests-extra' stamp: 'gmcb 6/9/2022 20:11:29'!
+test15CanNotAddAPortfolioThatIsAlreadyIn
+	| accountsOC1 portfolio1 portfolio2 | 
 	accountsOC1 := OrderedCollection new.
-	accountsOC1 add: account1.
-	accountsOC2 := OrderedCollection new.
+	portfolio1 := Portfolio with: OrderedCollection new.
+	accountsOC1 add: portfolio1.
+	portfolio2 := Portfolio with: accountsOC1.
+	
+	self should:[portfolio2 addAccount: portfolio1.]
+	raise: Error
+	withExceptionDo: [:anError | self assert: (Portfolio canNotAddAccount = anError messageText).]! !
 
-	portfolio1 := Portfolio with: accountsOC1.
-	portfolio1 addAccount: account2.
-	portfolio2 := Portfolio with: accountsOC2.
+!PortfolioTest methodsFor: 'tests-extra' stamp: 'gmcb 6/9/2022 20:13:17'!
+test16CanNotAddAnAccountThatIsAlreadyInAParent
+	| account1 portfolio1 portfolio2 | 
+	account1 := ReceptiveAccount new.
+	portfolio1 := Portfolio with: OrderedCollection new.
+	portfolio1 addAccount: account1.
+	portfolio2 := Portfolio with: OrderedCollection new.
 	portfolio1 addAccount: portfolio2.
+	
+	self should:[portfolio2 addAccount: account1.]
+	raise: Error
+	withExceptionDo: [:anError | self assert: (Portfolio canNotAddAccount = anError messageText).]! !
 
+!PortfolioTest methodsFor: 'tests-extra' stamp: 'gmcb 6/9/2022 20:16:48'!
+test17CanNotAddAnAccountThatIsAlreadyInAParentOfItsParent
+	| account1 portfolio1 portfolio2 portfolio3 | 
+	account1 := ReceptiveAccount new.
+	portfolio1 := Portfolio with: OrderedCollection new.
+	portfolio1 addAccount: account1.
+	portfolio2 := Portfolio with: OrderedCollection new.
+	portfolio3 := Portfolio with: OrderedCollection new.
+	portfolio1 addAccount: portfolio3.
+	portfolio3 addAccount: portfolio2.
+	
+	
+	self should:[portfolio2 addAccount: account1.]
+	raise: Error
+	withExceptionDo: [:anError | self assert: (Portfolio canNotAddAccount = anError messageText).]! !
 
-	self deny: (portfolio1 contains: account3 ).
-! !
+!PortfolioTest methodsFor: 'tests-extra' stamp: 'gmcb 6/9/2022 20:21:54'!
+test18CanNotAddAnAccountThatIsAlreadyInAPortfolioThatCointainsThePortfolio
+	| account1 portfolio1 portfolio2 portfolio3 portfolio4 | 
+	account1 := ReceptiveAccount new.
+	portfolio1 := Portfolio with: OrderedCollection new.
+	portfolio1 addAccount: account1.
+	portfolio2 := Portfolio with: OrderedCollection new.
+	portfolio3 := Portfolio with: OrderedCollection new.
+	portfolio4 := Portfolio with: OrderedCollection new.
+	portfolio1 addAccount: portfolio3.
+	portfolio3 addAccount: portfolio4.
+	portfolio4 addAccount: portfolio2.
+	
+	
+	self should:[portfolio2 addAccount: account1.]
+	raise: Error
+	withExceptionDo: [:anError | self assert: (Portfolio canNotAddAccount = anError messageText).]! !
+
+!PortfolioTest methodsFor: 'tests-extra' stamp: 'gmcb 6/9/2022 20:24:15'!
+test19CanNotAddAPortfolioThatContainsAnAccountThatIsAlreadyInThePortfolio
+	| account1 portfolio1 portfolio2 portfolio3 portfolio4 | 
+	account1 := ReceptiveAccount new.
+	portfolio1 := Portfolio with: OrderedCollection new.
+	portfolio2 := Portfolio with: OrderedCollection new.
+	portfolio1 addAccount: account1.
+	portfolio2 addAccount: account1.
+	portfolio3 := Portfolio with: OrderedCollection new.
+	portfolio4 := Portfolio with: OrderedCollection new.
+	portfolio3 addAccount: portfolio4.
+	portfolio1 addAccount: portfolio3.
+	
+	self should:[portfolio4 addAccount: portfolio2.]
+	raise: Error
+	withExceptionDo: [:anError | self assert: (Portfolio canNotAddAccount = anError messageText).]! !
 
 
 !classDefinition: #ReceptiveAccountTest category: 'ServiciosFinancieros-Ejercicio'!
@@ -535,10 +607,17 @@ for: aValue
 
 !classDefinition: #Portfolio category: 'ServiciosFinancieros-Ejercicio'!
 Object subclass: #Portfolio
-	instanceVariableNames: 'accounts'
+	instanceVariableNames: 'accounts parents'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'ServiciosFinancieros-Ejercicio'!
+
+!Portfolio methodsFor: 'main-protocol' stamp: 'gmcb 6/9/2022 19:59:34'!
+addAccount: anAccount
+	(self searchCoincidenceFromTop: anAccount)  ifTrue:[self error: Portfolio canNotAddAccount].
+	(anAccount isKindOf: Portfolio) ifTrue: [ self validatePortfolioInternalAccounts: anAccount].
+	accounts add: anAccount.
+	self updateChild: anAccount.! !
 
 !Portfolio methodsFor: 'main-protocol' stamp: 'gmcb 6/8/2022 18:32:30'!
 balance
@@ -557,28 +636,59 @@ transactions
 	^totalTransactions! !
 
 
-!Portfolio methodsFor: 'initialization' stamp: 'gmcb 6/9/2022 15:50:12'!
+!Portfolio methodsFor: 'initialization' stamp: 'gmcb 6/9/2022 18:11:18'!
+initialize
+	parents := OrderedCollection new.! !
+
+!Portfolio methodsFor: 'initialization' stamp: 'gmcb 6/9/2022 18:19:35'!
 initializeWith: anAccountsOC
-	accounts := anAccountsOC! !
+	accounts := anAccountsOC.
+	self updateChilds: anAccountsOC! !
 
 
-!Portfolio methodsFor: 'extra-protocol' stamp: 'gmcb 6/9/2022 00:23:02'!
-addAccount: anAccount
-	accounts add: anAccount.! !
+!Portfolio methodsFor: 'private' stamp: 'gmcb 6/9/2022 19:29:16'!
+accounts
+	^accounts! !
 
-!Portfolio methodsFor: 'extra-protocol' stamp: 'gmcb 6/9/2022 00:34:55'!
-contains: anAccount
-	^accounts anySatisfy: [:anotherAccount | anotherAccount isEqualTo: anAccount ]! !
+!Portfolio methodsFor: 'private' stamp: 'gmcb 6/9/2022 18:30:37'!
+coincidence: anAccount
+	(self = anAccount) ifTrue: [^true].
+	^accounts anySatisfy: [:anotherAccount |	 anotherAccount coincidence: anAccount ].! !
 
-!Portfolio methodsFor: 'extra-protocol' stamp: 'gmcb 6/9/2022 00:41:45'!
-isEqualTo: anAccount
-	(self = anAccount) ifTrue: [^true] ifFalse:[^self contains: anAccount.	].! !
+!Portfolio methodsFor: 'private' stamp: 'gmcb 6/9/2022 19:17:18'!
+searchCoincidenceFromTop: anAccount
+	(parents isEmpty) ifTrue: [^self coincidence: anAccount].
+	^parents anySatisfy: [:aPortfolio | aPortfolio searchCoincidenceFromTop: anAccount]! !
+
+!Portfolio methodsFor: 'private' stamp: 'gmcb 6/9/2022 18:45:14'!
+updateChild: anAccount
+	(anAccount isKindOf: Portfolio) ifTrue: [anAccount updateParents: self]! !
+
+!Portfolio methodsFor: 'private' stamp: 'gmcb 6/9/2022 18:46:49'!
+updateChilds: anAccountsOC
+	anAccountsOC do:[:anAccount | self updateChild: anAccount].! !
+
+!Portfolio methodsFor: 'private' stamp: 'gmcb 6/9/2022 18:14:25'!
+updateParents: anAccount
+	parents add: anAccount! !
+
+!Portfolio methodsFor: 'private' stamp: 'gmcb 6/9/2022 19:58:58'!
+validatePortfolioInternalAccounts: anAccount
+	(anAccount accounts anySatisfy: [:innerAccount | self searchCoincidenceFromTop: innerAccount])	 ifTrue:[self error: Portfolio canNotAddAccount]! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
 !classDefinition: 'Portfolio class' category: 'ServiciosFinancieros-Ejercicio'!
 Portfolio class
 	instanceVariableNames: ''!
+
+!Portfolio class methodsFor: 'as yet unclassified' stamp: 'gmcb 6/9/2022 17:28:48'!
+canNotAddAccount
+	^'Received account is already in the portfolio or in a related portfolio'! !
+
+!Portfolio class methodsFor: 'as yet unclassified' stamp: 'gmcb 6/9/2022 17:37:04'!
+canNotAddItself
+	^'Portfolio can not be added itself'! !
 
 !Portfolio class methodsFor: 'as yet unclassified' stamp: 'gmcb 6/8/2022 18:21:44'!
 with: aReceptiveAccountsOC
@@ -605,6 +715,10 @@ initialize
 balance
 
 	^transactions sum: [ :aTransaction | aTransaction affectBalance ] ifEmpty: [ 0 ]! !
+
+!ReceptiveAccount methodsFor: 'main protocol' stamp: 'gmcb 6/9/2022 18:02:01'!
+coincidence: anAccount
+	^self = anAccount! !
 
 !ReceptiveAccount methodsFor: 'main protocol' stamp: 'NR 10/17/2019 03:28:43'!
 hasRegistered: aTransaction
