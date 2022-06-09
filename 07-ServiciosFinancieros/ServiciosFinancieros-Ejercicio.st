@@ -1,3 +1,242 @@
+!classDefinition: #PortfolioTest category: 'ServiciosFinancieros-Ejercicio'!
+TestCase subclass: #PortfolioTest
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'ServiciosFinancieros-Ejercicio'!
+
+!PortfolioTest methodsFor: 'tests' stamp: 'gmcb 6/9/2022 14:56:42'!
+test01BalanceIsEqualToTotalAccountsBalance
+	| account1 account2 accountsOC portfolio |
+	account1 := ReceptiveAccount new.
+	account2 := ReceptiveAccount new.
+	Deposit register: 100 * peso on: account1.
+	Deposit register: 200 * peso on: account2.
+	
+	accountsOC := OrderedCollection new.
+	accountsOC add: account1.
+	accountsOC add: account2.
+	
+	portfolio := Portfolio with: accountsOC.
+	
+	self assert: 300 * peso equals: portfolio balance! !
+
+!PortfolioTest methodsFor: 'tests' stamp: 'gmcb 6/9/2022 14:56:19'!
+test02BalanceIsEqualToTotalAccountsBalanceWhenTheyAreDifferent
+	| account1 account2 accountsOC portfolio |
+	account1 := ReceptiveAccount new.
+	account2 := ReceptiveAccount new.
+	Deposit register: 200 * peso on: account1.
+	Deposit register: 200 * peso on: account2.
+	
+	accountsOC := OrderedCollection new.
+	accountsOC add: account1.
+	accountsOC add: account2.
+	
+	portfolio := Portfolio with: accountsOC.
+	
+	self assert: 400 * peso equals: portfolio balance! !
+
+!PortfolioTest methodsFor: 'tests' stamp: 'gmcb 6/9/2022 14:57:51'!
+test03BalanceIsEqualToContainingPortfolioBalance
+	| account1 account2 accountsOC1 accountsOC2 portfolio1 portfolio2 |
+	account1 := ReceptiveAccount new.
+	account2 := ReceptiveAccount new.
+	Deposit register: 200 * peso on: account1.
+	Deposit register: 200 * peso on: account2.
+	
+	accountsOC1 := OrderedCollection new.
+	accountsOC1 add: account1.
+	accountsOC1 add: account2.
+	
+	portfolio1 := Portfolio with: accountsOC1.
+	
+	accountsOC2 := OrderedCollection new.
+	accountsOC2 add: portfolio1. 
+	
+	portfolio2 := Portfolio with: accountsOC2.
+	
+	self assert: 400 * peso equals: portfolio2 balance! !
+
+!PortfolioTest methodsFor: 'tests' stamp: 'gmcb 6/9/2022 15:01:59'!
+test04TransactionInAnAccountThatHasNotBeenIncludedIsNotRegistered
+	| account1 account2 accountsOC portfolio transaction |
+	account1 := ReceptiveAccount new.
+	account2 := ReceptiveAccount new.
+	Deposit register: 100 * peso on: account1.
+	transaction := Deposit register: 100 * peso on: account2.
+	
+	accountsOC := OrderedCollection new.
+	accountsOC add: account1.
+	
+	portfolio := Portfolio with: accountsOC.
+
+	self deny: (portfolio hasRegistered: transaction).! !
+
+!PortfolioTest methodsFor: 'tests' stamp: 'gmcb 6/9/2022 15:04:19'!
+test05TransactionInAnAccountThatHasBeenIncludedIsRegistered
+	| account1 account2 accountsOC portfolio transaction |
+	account1 := ReceptiveAccount new.
+	account2 := ReceptiveAccount new.
+	Deposit register: 100 * peso on: account1.
+	transaction := Deposit register: 100 * peso on: account2.
+	
+	accountsOC := OrderedCollection new.
+	accountsOC add: account1.
+	accountsOC add: account2.
+	
+	portfolio := Portfolio with: accountsOC.
+
+	self assert: (portfolio hasRegistered: transaction).! !
+
+!PortfolioTest methodsFor: 'tests' stamp: 'gmcb 6/9/2022 15:07:15'!
+test06TransactionInAContainingPortfolioIsRegistered
+	| account1 account2 accountsOC1 accountsOC2 portfolio1 portfolio2 transaction |
+	account1 := ReceptiveAccount new.
+	account2 := ReceptiveAccount new.
+	transaction := Deposit register: 200 * peso on: account1.
+	Deposit register: 200 * peso on: account2.
+	
+	accountsOC1 := OrderedCollection new.
+	accountsOC1 add: account1.
+	accountsOC1 add: account2.
+	
+	portfolio1 := Portfolio with: accountsOC1.
+	
+	accountsOC2 := OrderedCollection new.
+	accountsOC2 add: portfolio1. 
+	
+	portfolio2 := Portfolio with: accountsOC2.
+	
+	self assert: (portfolio2 hasRegistered: transaction )! !
+
+!PortfolioTest methodsFor: 'tests' stamp: 'gmcb 6/9/2022 15:09:29'!
+test07PortfolioContainingOneAccountProvidesItTransactions
+	| account1 accountsOC portfolio transaction totalTransactions |
+	account1 := ReceptiveAccount new.
+	transaction := Deposit register: 100 * peso on: account1.
+
+	accountsOC := OrderedCollection new.
+	accountsOC add: account1.
+	totalTransactions := OrderedCollection new.
+	totalTransactions add: transaction.
+	
+	portfolio := Portfolio with: accountsOC.
+	
+	self assert: totalTransactions equals: portfolio transactions! !
+
+!PortfolioTest methodsFor: 'tests' stamp: 'gmcb 6/9/2022 15:18:55'!
+test08PortfolioContainingMultipleAccountsProvidesTheirTransactions
+	| account1 account2 accountsOC portfolio transaction1 transaction2 totalTransactions |
+	account1 := ReceptiveAccount new.
+	account2 := ReceptiveAccount new.
+	transaction1 := Deposit register: 100 * peso on: account1.
+	transaction2 := Deposit register: 200 * peso on: account2.
+
+	accountsOC := OrderedCollection new.
+	accountsOC add: account1.
+	accountsOC add: account2.
+	totalTransactions := OrderedCollection new.
+	totalTransactions add: transaction1.
+	totalTransactions add: transaction2.
+	
+	
+	portfolio := Portfolio with: accountsOC.
+	
+	self assert: totalTransactions equals: portfolio transactions! !
+
+!PortfolioTest methodsFor: 'tests' stamp: 'gmcb 6/9/2022 15:19:54'!
+test09PortfolioContainingAnEmptyPortfolioProvidesItTransactions
+	| portfolio1 portfolio2 portfolioContainer emptyOC|
+	
+	emptyOC := OrderedCollection new.
+	portfolio1 := Portfolio with: emptyOC.
+	portfolioContainer := OrderedCollection new.
+	portfolioContainer add: portfolio1.
+	portfolio2 := Portfolio with: portfolioContainer.
+
+	self assert: emptyOC equals: portfolio2 transactions! !
+
+!PortfolioTest methodsFor: 'tests' stamp: 'gmcb 6/9/2022 15:20:54'!
+test10PortfolioContainingAPortfolioWithMultipleAccountsProvidesTheirTransactions
+	| account1 account2 accountsOC portfolio1 portfolio2 transaction1 transaction2 totalTransactions containerPortfolio |
+	account1 := ReceptiveAccount new.
+	account2 := ReceptiveAccount new.
+	transaction1 := Deposit register: 100 * peso on: account1.
+	transaction2 := Deposit register: 200 * peso on: account2.
+
+	accountsOC := OrderedCollection new.
+	accountsOC add: account1.
+	accountsOC add: account2.
+	totalTransactions := OrderedCollection new.
+	totalTransactions add: transaction1.
+	totalTransactions add: transaction2.
+	
+	
+	portfolio1 := Portfolio with: accountsOC.
+	
+	containerPortfolio := OrderedCollection new.
+	containerPortfolio add: portfolio1.
+	
+	portfolio2:= Portfolio with: containerPortfolio.
+	
+	self assert: totalTransactions equals: portfolio2 transactions! !
+
+
+!PortfolioTest methodsFor: 'tests-extra' stamp: 'gmcb 6/9/2022 00:23:57'!
+test11
+	| account1 account2 accountsOC portfolio |
+	account1 := ReceptiveAccount new.
+	account2 := ReceptiveAccount new.
+	accountsOC := OrderedCollection new.
+	accountsOC add: account1.
+
+	portfolio := Portfolio with: accountsOC.
+	portfolio addAccount: account2.
+
+	self assert: (portfolio contains: account2).
+! !
+
+!PortfolioTest methodsFor: 'tests-extra' stamp: 'gmcb 6/9/2022 00:38:59'!
+test12
+	| account1 account2 account3 accountsOC1 accountsOC2 portfolio1 portfolio2 |
+	account1 := ReceptiveAccount new.
+	account2 := ReceptiveAccount new.
+	account3 := ReceptiveAccount new.
+	accountsOC1 := OrderedCollection new.
+	accountsOC1 add: account1.
+	accountsOC2 := OrderedCollection new.
+	accountsOC2 add: account3.
+
+	portfolio1 := Portfolio with: accountsOC1.
+	portfolio1 addAccount: account2.
+	portfolio2 := Portfolio with: accountsOC2.
+	portfolio1 addAccount: portfolio2.
+
+
+	self assert: (portfolio1 contains: account3 ).
+! !
+
+!PortfolioTest methodsFor: 'tests-extra' stamp: 'gmcb 6/9/2022 00:39:23'!
+test13
+	| account1 account2 account3 accountsOC1 accountsOC2 portfolio1 portfolio2 |
+	account1 := ReceptiveAccount new.
+	account2 := ReceptiveAccount new.
+	account3 := ReceptiveAccount new.
+	accountsOC1 := OrderedCollection new.
+	accountsOC1 add: account1.
+	accountsOC2 := OrderedCollection new.
+
+	portfolio1 := Portfolio with: accountsOC1.
+	portfolio1 addAccount: account2.
+	portfolio2 := Portfolio with: accountsOC2.
+	portfolio1 addAccount: portfolio2.
+
+
+	self deny: (portfolio1 contains: account3 ).
+! !
+
+
 !classDefinition: #ReceptiveAccountTest category: 'ServiciosFinancieros-Ejercicio'!
 TestCase subclass: #ReceptiveAccountTest
 	instanceVariableNames: ''
@@ -89,62 +328,112 @@ test07AccountKnowsItsTransactions
 ! !
 
 
-!classDefinition: #TransferTest category: 'ServiciosFinancieros-Ejercicio'!
-TestCase subclass: #TransferTest
+!classDefinition: #TransferenceTest category: 'ServiciosFinancieros-Ejercicio'!
+TestCase subclass: #TransferenceTest
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'ServiciosFinancieros-Ejercicio'!
 
-!TransferTest methodsFor: 'as yet unclassified' stamp: 'smb 6/6/2022 20:33:46'!
-test01
-	| transference account1 account2 |
-	account1 := ReceptiveAccount new.
-	account2 := ReceptiveAccount new.
-	transference := Transference from: account1 to: account2 value: 100 *peso.
-	self assert: 100 * peso equals: transference value.! !
-
-!TransferTest methodsFor: 'as yet unclassified' stamp: 'smb 6/6/2022 20:34:30'!
-test02
+!TransferenceTest methodsFor: 'tests' stamp: 'gmcb 6/9/2022 15:26:41'!
+test01BalanceInTheDepositedAccountIncreasesConsideringTheTransferenceValue
 	| account1 account2 |
 	account1 := ReceptiveAccount new.
 	account2 := ReceptiveAccount new.
-	Transference from: account1 to: account2 value: 100 *peso.
+	Transference value: 100 * peso from: account1 to: account2.
 	self assert: 100 * peso equals: account2 balance.! !
 
-!TransferTest methodsFor: 'as yet unclassified' stamp: 'smb 6/6/2022 20:38:19'!
-test03
+!TransferenceTest methodsFor: 'tests' stamp: 'gmcb 6/9/2022 15:26:49'!
+test02BalanceInTheWithdrawnAccountDecreasesConsideringTheTransferenceValue
 	| account1 account2 |
 	account1 := ReceptiveAccount new.
 	account2 := ReceptiveAccount new.
-	Transference from: account1 to: account2 value: 100 *peso.
-	self assert: (100 * peso) negated equals: account1 balance.! !
+	Transference value: 100 * peso from: account1 to: account2.
+	self assert: (100 * peso ) negated equals: account1 balance.! !
 
-!TransferTest methodsFor: 'as yet unclassified' stamp: 'smb 6/6/2022 21:09:27'!
-test04
+!TransferenceTest methodsFor: 'tests' stamp: 'gmcb 6/9/2022 15:26:22'!
+test03TransferenceValueIsEqualToEnteredValue
 	| account1 account2 transference |
 	account1 := ReceptiveAccount new.
 	account2 := ReceptiveAccount new.
-	transference := Transference from: account1 to: account2 value: 100 *peso.
-	self assert: account2 equals: transference pataExtractora.! !
+	transference := Transference value: 100 * peso from: account1 to: account2.
+	self assert: 100 * peso  equals: transference value.! !
 
-!TransferTest methodsFor: 'as yet unclassified' stamp: 'smb 6/6/2022 21:09:35'!
-test05
+!TransferenceTest methodsFor: 'tests' stamp: 'gmcb 6/9/2022 15:29:56'!
+test04DifferentTransferenceValueIsEqualToDifferentEnteredValue
 	| account1 account2 transference |
 	account1 := ReceptiveAccount new.
 	account2 := ReceptiveAccount new.
-	transference := Transference from: account1 to: account2 value: 100 *peso.
-	self assert: account1 equals: transference pataDepositante.! !
+	transference := Transference value: 125 * peso from: account1 to: account2.
+	self assert: 125 * peso  equals: transference value.! !
 
-!TransferTest methodsFor: 'as yet unclassified' stamp: 'smb 6/6/2022 21:09:41'!
-test06
-	| account1 account2 transference depositante |
+!TransferenceTest methodsFor: 'tests' stamp: 'gmcb 6/8/2022 17:23:59'!
+test05CanNotTransferANegativeAmount
+	| account1 account2 |
 	account1 := ReceptiveAccount new.
 	account2 := ReceptiveAccount new.
-	transference := Transference from: account1 to: account2 value: 100 *peso.
-	depositante := transference pataDepositante.
 	
-	self assert: account2 equals: depositante contraparte.! !
+	self should:[Transference value: (100 * peso) negated from: account1 to: account2.]
+	raise: Error
+	withExceptionDo: [:anError | self assert: Transference transferenceValueIsInvalid equals: anError messageText.]! !
+
+!TransferenceTest methodsFor: 'tests' stamp: 'gmcb 6/9/2022 15:31:14'!
+test06TransferenceProvidesAWithdrawLeg
+	| account1 account2 transference |
+	account1 := ReceptiveAccount new.
+	account2 := ReceptiveAccount new.
+	transference := Transference value: (100 * peso) from: account1 to: account2.
+	
+	self assert: transference withdrawLeg class equals: WithdrawLeg.! !
+
+!TransferenceTest methodsFor: 'tests' stamp: 'gmcb 6/9/2022 15:31:29'!
+test07TransferenceProvidesADepositLeg
+	| account1 account2 transference |
+	account1 := ReceptiveAccount new.
+	account2 := ReceptiveAccount new.
+	transference := Transference value: (100 * peso) from: account1 to: account2.
+	
+	self assert: transference depositLeg class equals: DepositLeg.! !
+
+!TransferenceTest methodsFor: 'tests' stamp: 'gmcb 6/9/2022 15:33:03'!
+test08TransferenceAlwaysProvidesTheSameWithdrawLeg
+	| account1 account2 transference previousWithdrawLeg |
+	account1 := ReceptiveAccount new.
+	account2 := ReceptiveAccount new.
+	transference := Transference value: (100 * peso) from: account1 to: account2.
+	previousWithdrawLeg := transference withdrawLeg.
+
+	self assert: previousWithdrawLeg equals: transference withdrawLeg.! !
+
+!TransferenceTest methodsFor: 'tests' stamp: 'gmcb 6/9/2022 15:33:29'!
+test09TransferenceAlwaysProvidesTheSameDepositLeg
+	| account1 account2 transference previousDepositLeg |
+	account1 := ReceptiveAccount new.
+	account2 := ReceptiveAccount new.
+	transference := Transference value: (100 * peso) from: account1 to: account2.
+	previousDepositLeg := transference depositLeg.
+
+	self assert: previousDepositLeg equals: transference depositLeg.! !
+
+!TransferenceTest methodsFor: 'tests' stamp: 'gmcb 6/9/2022 15:34:06'!
+test10WithdrawLegProvidesItsCounterPart
+	| account1 account2 transference withdrawLeg |
+	account1 := ReceptiveAccount new.
+	account2 := ReceptiveAccount new.
+	transference := Transference value: (100 * peso) from: account1 to: account2.
+	withdrawLeg := transference withdrawLeg .
+	
+	self assert: transference depositLeg equals: withdrawLeg counterpart.! !
+
+!TransferenceTest methodsFor: 'tests' stamp: 'gmcb 6/9/2022 15:34:33'!
+test11DepositLegProvidesItsCounterPart
+	| account1 account2 transference depositLeg |
+	account1 := ReceptiveAccount new.
+	account2 := ReceptiveAccount new.
+	transference := Transference value: (100 * peso) from: account1 to: account2.
+	depositLeg := transference depositLeg .
+	
+	self assert: transference withdrawLeg equals: depositLeg counterpart.! !
 
 
 !classDefinition: #AccountTransaction category: 'ServiciosFinancieros-Ejercicio'!
@@ -153,10 +442,6 @@ Object subclass: #AccountTransaction
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'ServiciosFinancieros-Ejercicio'!
-
-!AccountTransaction methodsFor: 'value' stamp: 'smb 6/6/2022 20:41:38'!
-affectBalance
-	self subclassResponsibility ! !
 
 !AccountTransaction methodsFor: 'value' stamp: 'HernanWilkinson 9/12/2011 12:25'!
 value 
@@ -193,9 +478,9 @@ initializeFor: aValue
 	value := aValue ! !
 
 
-!Deposit methodsFor: 'value' stamp: 'smb 6/6/2022 20:42:18'!
+!Deposit methodsFor: 'value' stamp: 'gmcb 6/7/2022 19:18:46'!
 affectBalance
-	^self value! !
+	^value.! !
 
 !Deposit methodsFor: 'value' stamp: 'HernanWilkinson 7/13/2011 18:38'!
 value
@@ -227,9 +512,9 @@ initializeFor: aValue
 	value := aValue ! !
 
 
-!Withdraw methodsFor: 'value' stamp: 'smb 6/6/2022 20:42:33'!
+!Withdraw methodsFor: 'value' stamp: 'gmcb 6/7/2022 19:19:01'!
 affectBalance
-	^self value negated! !
+	^value negated.! !
 
 !Withdraw methodsFor: 'value' stamp: 'HernanWilkinson 7/13/2011 18:33'!
 value
@@ -248,34 +533,59 @@ for: aValue
 	^ self new initializeFor: aValue ! !
 
 
-!classDefinition: #PataDepositante category: 'ServiciosFinancieros-Ejercicio'!
-Object subclass: #PataDepositante
-	instanceVariableNames: ''
+!classDefinition: #Portfolio category: 'ServiciosFinancieros-Ejercicio'!
+Object subclass: #Portfolio
+	instanceVariableNames: 'accounts'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'ServiciosFinancieros-Ejercicio'!
+
+!Portfolio methodsFor: 'main-protocol' stamp: 'gmcb 6/8/2022 18:32:30'!
+balance
+	^accounts sum: [ :anAccount | anAccount balance ] ifEmpty: [ 0 ]! !
+
+!Portfolio methodsFor: 'main-protocol' stamp: 'gmcb 6/9/2022 00:13:21'!
+hasRegistered: aTransaction
+	^accounts anySatisfy: [:anAccount | (anAccount hasRegistered: aTransaction)].
+	! !
+
+!Portfolio methodsFor: 'main-protocol' stamp: 'gmcb 6/8/2022 23:09:35'!
+transactions
+	| totalTransactions |
+	totalTransactions := OrderedCollection new.
+	accounts do:[:anAccount | totalTransactions addAllLast: anAccount transactions].
+	^totalTransactions! !
+
+
+!Portfolio methodsFor: 'initialization' stamp: 'gmcb 6/9/2022 15:50:12'!
+initializeWith: anAccountsOC
+	accounts := anAccountsOC! !
+
+
+!Portfolio methodsFor: 'extra-protocol' stamp: 'gmcb 6/9/2022 00:23:02'!
+addAccount: anAccount
+	accounts add: anAccount.! !
+
+!Portfolio methodsFor: 'extra-protocol' stamp: 'gmcb 6/9/2022 00:34:55'!
+contains: anAccount
+	^accounts anySatisfy: [:anotherAccount | anotherAccount isEqualTo: anAccount ]! !
+
+!Portfolio methodsFor: 'extra-protocol' stamp: 'gmcb 6/9/2022 00:41:45'!
+isEqualTo: anAccount
+	(self = anAccount) ifTrue: [^true] ifFalse:[^self contains: anAccount.	].! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
-!classDefinition: 'PataDepositante class' category: 'ServiciosFinancieros-Ejercicio'!
-PataDepositante class
+!classDefinition: 'Portfolio class' category: 'ServiciosFinancieros-Ejercicio'!
+Portfolio class
 	instanceVariableNames: ''!
 
-!PataDepositante class methodsFor: 'as yet unclassified' stamp: 'smb 6/6/2022 21:15:32'!
-account: aReceptiveAccount 
-	| pata |
-	pata _ self new.
-	pata setAccount: aReceptiveAccount .
-	^pata
-	! !
-
-
-!classDefinition: #PataExtraccion category: 'ServiciosFinancieros-Ejercicio'!
-Object subclass: #PataExtraccion
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'ServiciosFinancieros-Ejercicio'!
+!Portfolio class methodsFor: 'as yet unclassified' stamp: 'gmcb 6/8/2022 18:21:44'!
+with: aReceptiveAccountsOC
+	| portfolio |
+	portfolio := self new.
+	portfolio initializeWith: aReceptiveAccountsOC.
+	^portfolio ! !
 
 
 !classDefinition: #ReceptiveAccount category: 'ServiciosFinancieros-Ejercicio'!
@@ -291,7 +601,7 @@ initialize
 	transactions := OrderedCollection new.! !
 
 
-!ReceptiveAccount methodsFor: 'main protocol' stamp: 'smb 6/6/2022 20:43:06'!
+!ReceptiveAccount methodsFor: 'main protocol' stamp: 'gmcb 6/7/2022 19:19:23'!
 balance
 
 	^transactions sum: [ :aTransaction | aTransaction affectBalance ] ifEmpty: [ 0 ]! !
@@ -301,6 +611,10 @@ hasRegistered: aTransaction
 
 	^ transactions includes: aTransaction 
 ! !
+
+!ReceptiveAccount methodsFor: 'main protocol' stamp: 'gmcb 6/9/2022 00:35:49'!
+isEqualTo: anAccount
+	^self = anAccount.! !
 
 !ReceptiveAccount methodsFor: 'main protocol' stamp: 'HernanWilkinson 7/13/2011 18:37'!
 register: aTransaction
@@ -316,34 +630,32 @@ transactions
 
 !classDefinition: #Transference category: 'ServiciosFinancieros-Ejercicio'!
 Object subclass: #Transference
-	instanceVariableNames: 'depositante pataExtractora pataDepositante'
+	instanceVariableNames: 'value withdrawLeg depositLeg'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'ServiciosFinancieros-Ejercicio'!
 
-!Transference methodsFor: 'as yet unclassified' stamp: 'smb 6/6/2022 21:04:53'!
-pataDepositante
-	^pataDepositante.! !
+!Transference methodsFor: 'main-protocol' stamp: 'gmcb 6/9/2022 15:35:40'!
+depositLeg
+	^depositLeg.! !
 
-!Transference methodsFor: 'as yet unclassified' stamp: 'smb 6/6/2022 21:01:09'!
-pataExtractora
-	^pataExtractora.! !
-
-!Transference methodsFor: 'as yet unclassified' stamp: 'smb 6/6/2022 21:11:30'!
-setPataDepositante: aReceptiveAccount
-	pataDepositante := PataDepositante account: aReceptiveAccount.
-	
-! !
-
-!Transference methodsFor: 'as yet unclassified' stamp: 'smb 6/6/2022 21:03:11'!
-setPataExtractora: aReceptiveAccount
-	pataExtractora := aReceptiveAccount.
-	
-! !
-
-!Transference methodsFor: 'as yet unclassified' stamp: 'smb 6/6/2022 20:32:48'!
+!Transference methodsFor: 'main-protocol' stamp: 'gmcb 6/7/2022 19:40:20'!
 value
-	^100 * peso.! !
+	^value.! !
+
+!Transference methodsFor: 'main-protocol' stamp: 'gmcb 6/9/2022 15:35:30'!
+withdrawLeg
+	^withdrawLeg.! !
+
+
+!Transference methodsFor: 'initialization' stamp: 'gmcb 6/9/2022 15:35:40'!
+initializeFor: aValueToTransfer from: aReceptiveAccount to: anotherReceptiveAccount
+	value := aValueToTransfer.
+	withdrawLeg := WithdrawLeg registerOn: aReceptiveAccount in: self.
+	depositLeg := DepositLeg registerOn: anotherReceptiveAccount in: self.
+	withdrawLeg initializeWithCounterPart: depositLeg.
+	depositLeg initializeWithCounterPart: withdrawLeg.
+	! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
@@ -351,12 +663,97 @@ value
 Transference class
 	instanceVariableNames: ''!
 
-!Transference class methodsFor: 'as yet unclassified' stamp: 'smb 6/6/2022 21:09:15'!
-from: aReceptiveAccount to: anotherReceptiveAccount value: aSimpleMeasure 
+!Transference class methodsFor: 'initialization' stamp: 'gmcb 6/8/2022 16:17:38'!
+value: aValueToTransfer from: aReceptiveAccount to: anotherReceptiveAccount
 	| transference |
-	Withdraw register: 100*peso on: aReceptiveAccount .
-	Deposit register: 100*peso on: anotherReceptiveAccount.
+	(aValueToTransfer positive) ifFalse: [
+		self error: Transference transferenceValueIsInvalid.	
+	].
 	transference := self new.
-	transference setPataExtractora: anotherReceptiveAccount .
-	transference setPataDepositante: aReceptiveAccount.
-	^transference ! !
+	transference initializeFor: aValueToTransfer from: aReceptiveAccount to: anotherReceptiveAccount.
+	
+	^transference.! !
+
+
+!Transference class methodsFor: 'errors' stamp: 'gmcb 6/7/2022 19:47:10'!
+transferenceValueIsInvalid
+	^'The value to transfer must be positive'! !
+
+
+!classDefinition: #TransferenceLeg category: 'ServiciosFinancieros-Ejercicio'!
+Object subclass: #TransferenceLeg
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'ServiciosFinancieros-Ejercicio'!
+
+!TransferenceLeg methodsFor: 'as yet unclassified' stamp: 'gmcb 6/9/2022 15:37:08'!
+affectBalance
+	self subclassResponsibility! !
+
+!TransferenceLeg methodsFor: 'as yet unclassified' stamp: 'gmcb 6/9/2022 15:37:29'!
+counterpart
+	self subclassResponsibility! !
+
+"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
+
+!classDefinition: 'TransferenceLeg class' category: 'ServiciosFinancieros-Ejercicio'!
+TransferenceLeg class
+	instanceVariableNames: ''!
+
+!TransferenceLeg class methodsFor: 'initialization' stamp: 'gmcb 6/8/2022 16:22:54'!
+registerOn: aReceptiveAccount in: aTransference
+	| transferenceLeg |
+	transferenceLeg := self new.
+	transferenceLeg initializeWithTransference: aTransference.
+	aReceptiveAccount register: transferenceLeg.
+	^transferenceLeg ! !
+
+
+!classDefinition: #DepositLeg category: 'ServiciosFinancieros-Ejercicio'!
+TransferenceLeg subclass: #DepositLeg
+	instanceVariableNames: 'counterpart transference'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'ServiciosFinancieros-Ejercicio'!
+
+!DepositLeg methodsFor: 'as yet unclassified' stamp: 'gmcb 6/8/2022 16:24:21'!
+affectBalance
+	^transference value! !
+
+!DepositLeg methodsFor: 'as yet unclassified' stamp: 'gmcb 6/7/2022 22:31:32'!
+counterpart
+	^counterpart! !
+
+!DepositLeg methodsFor: 'as yet unclassified' stamp: 'gmcb 6/8/2022 15:27:05'!
+initializeWithCounterPart: aCounterpart
+	counterpart := aCounterpart.! !
+
+!DepositLeg methodsFor: 'as yet unclassified' stamp: 'gmcb 6/8/2022 16:21:33'!
+initializeWithTransference: aTransference
+	transference := aTransference.! !
+
+
+!classDefinition: #WithdrawLeg category: 'ServiciosFinancieros-Ejercicio'!
+TransferenceLeg subclass: #WithdrawLeg
+	instanceVariableNames: 'counterpart transference'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'ServiciosFinancieros-Ejercicio'!
+
+!WithdrawLeg methodsFor: 'main-protocol' stamp: 'gmcb 6/8/2022 16:24:47'!
+affectBalance
+	^transference value negated! !
+
+!WithdrawLeg methodsFor: 'main-protocol' stamp: 'gmcb 6/7/2022 22:26:42'!
+counterpart
+	^counterpart! !
+
+
+!WithdrawLeg methodsFor: 'initialization' stamp: 'gmcb 6/8/2022 15:27:05'!
+initializeWithCounterPart: aCounterpart
+	counterpart := aCounterpart.! !
+
+!WithdrawLeg methodsFor: 'initialization' stamp: 'gmcb 6/8/2022 16:21:56'!
+initializeWithTransference: aTransference
+	transference := aTransference.! !
