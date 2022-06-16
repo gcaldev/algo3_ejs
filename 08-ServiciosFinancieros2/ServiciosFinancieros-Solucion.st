@@ -5,16 +5,16 @@ TestCase subclass: #AccountSummaryTest
 	poolDictionaries: ''
 	category: 'ServiciosFinancieros-Solucion'!
 
-!AccountSummaryTest methodsFor: 'as yet unclassified' stamp: 'gmcb 6/14/2022 18:44:42'!
-test01
+!AccountSummaryTest methodsFor: 'as yet unclassified' stamp: 'gmcb 6/15/2022 22:23:01'!
+test01WhenAnAccountHasNotDoneTransactionsReportBalanceIsZero
 	| account report |
 	account := ReceptiveAccount new.
 	report := AccountSummary for: account.
 	
 	self assert: (OrderedCollection with:'Balance = 0 * pesos') equals: report generate! !
 
-!AccountSummaryTest methodsFor: 'as yet unclassified' stamp: 'gmcb 6/14/2022 18:57:27'!
-test02
+!AccountSummaryTest methodsFor: 'as yet unclassified' stamp: 'gmcb 6/15/2022 22:24:07'!
+test02WhenAnAccountHasDoneOneTransactionShowsDepositSummaryLineAndBalance
 	| account report |
 	account := ReceptiveAccount new.
 	Deposit register: 100 * peso on: account. 
@@ -22,8 +22,8 @@ test02
 	
 	self assert: (OrderedCollection newFrom:#('Depósito por 100 * pesos' 'Balance = 100 * pesos')) equals: report generate! !
 
-!AccountSummaryTest methodsFor: 'as yet unclassified' stamp: 'gmcb 6/14/2022 18:57:23'!
-test03
+!AccountSummaryTest methodsFor: 'as yet unclassified' stamp: 'gmcb 6/15/2022 22:25:13'!
+test03WhenAnAccountHasDoneOneTransactionShowsWithdrawSummaryLineAndBalance
 	| account report |
 	account := ReceptiveAccount new.
 	Withdraw register: 50 * peso on: account. 
@@ -31,8 +31,8 @@ test03
 	
 	self assert: (OrderedCollection newFrom:#('Extracción por 50 * pesos' 'Balance = -50 * pesos')) equals: report generate! !
 
-!AccountSummaryTest methodsFor: 'as yet unclassified' stamp: 'gmcb 6/14/2022 19:04:33'!
-test04
+!AccountSummaryTest methodsFor: 'as yet unclassified' stamp: 'gmcb 6/15/2022 22:26:02'!
+test04WhenAnAccountHasDoneOneTransactionShowsTransferWithdrawLegSummaryLineAndBalance
 	| account anotherAccount report |
 	account := ReceptiveAccount new.
 	anotherAccount := ReceptiveAccount new.
@@ -41,8 +41,8 @@ test04
 	
 	self assert: (OrderedCollection newFrom:#('Salida por transferencia de 20 * pesos' 'Balance = -20 * pesos')) equals: report generate! !
 
-!AccountSummaryTest methodsFor: 'as yet unclassified' stamp: 'gmcb 6/14/2022 19:08:07'!
-test05
+!AccountSummaryTest methodsFor: 'as yet unclassified' stamp: 'gmcb 6/15/2022 22:26:42'!
+test05WhenAnAccountHasDoneOneTransactionShowsTransferDepositLegSummaryLineAndBalance
 	| account anotherAccount report |
 	account := ReceptiveAccount new.
 	anotherAccount := ReceptiveAccount new.
@@ -51,8 +51,8 @@ test05
 	
 	self assert: (OrderedCollection newFrom:#('Entrada por transferencia de 30 * pesos' 'Balance = 30 * pesos')) equals: report generate! !
 
-!AccountSummaryTest methodsFor: 'as yet unclassified' stamp: 'gmcb 6/14/2022 19:15:35'!
-test06
+!AccountSummaryTest methodsFor: 'as yet unclassified' stamp: 'gmcb 6/15/2022 22:27:51'!
+test06WhenAnAccountHasDoneMultipleTransactionsShowsTheReportProperly
 	| account report |
 	account := ReceptiveAccount new.
 	Deposit register: 100 * peso on: account.
@@ -60,6 +60,21 @@ test06
 	report := AccountSummary for: account.
 	
 	self assert: (OrderedCollection newFrom:#('Depósito por 100 * pesos' 'Extracción por 75 * pesos' 'Balance = 25 * pesos')) equals: report generate! !
+
+
+!classDefinition: #PortfolioDetailedTreePrinterTest category: 'ServiciosFinancieros-Solucion'!
+TestCase subclass: #PortfolioDetailedTreePrinterTest
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'ServiciosFinancieros-Solucion'!
+
+!PortfolioDetailedTreePrinterTest methodsFor: 'as yet unclassified' stamp: 'gmcb 6/15/2022 22:01:40'!
+test01
+	| reportDetailedTree |
+	
+	reportDetailedTree := PortfolioDetailedTreePrinter for: (Portfolio named: 'Portfolio de la familia').
+	self assert: (OrderedCollection newFrom: #('Portfolio de la familia' '   Balance = 0 * pesos')) equals: reportDetailedTree generate.! !
 
 
 !classDefinition: #PortfolioTest category: 'ServiciosFinancieros-Solucion'!
@@ -275,6 +290,52 @@ test15PortfolioCanNotIncludeAnyOfTheComposedAccountOfPortfolioToAdd
 			self assert: portfolioToModify accountsIsEmpty ]! !
 
 
+!classDefinition: #PortfolioTreePrinterTest category: 'ServiciosFinancieros-Solucion'!
+TestCase subclass: #PortfolioTreePrinterTest
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'ServiciosFinancieros-Solucion'!
+
+!PortfolioTreePrinterTest methodsFor: 'as yet unclassified' stamp: 'gmcb 6/15/2022 22:44:46'!
+test01WhenThereIsJustAPortfolioReportShowsItsName
+	| portfolio portfolioTreePrinter |
+	portfolio := Portfolio named: 'Portfolio de la familia'.
+	portfolioTreePrinter := PortfolioTreePrinter for: portfolio.
+	
+	self assert: (OrderedCollection with: 'Portfolio de la familia') equals: portfolioTreePrinter generate.! !
+
+!PortfolioTreePrinterTest methodsFor: 'as yet unclassified' stamp: 'gmcb 6/15/2022 22:45:56'!
+test02WhenAPortfolioHasJustAnAccountReportShowsBothNames
+	| account portfolio portfolioTreePrinter |
+	account := ReceptiveAccount named: 'Cuenta mia'.
+	portfolio := Portfolio named: 'Portfolio de la familia' with: account.
+	portfolioTreePrinter := PortfolioTreePrinter for: portfolio.
+	
+	self assert: (OrderedCollection newFrom: #('Portfolio de la familia' '   Cuenta mia')) equals: portfolioTreePrinter generate.! !
+
+!PortfolioTreePrinterTest methodsFor: 'as yet unclassified' stamp: 'gmcb 6/15/2022 22:47:05'!
+test03WhenAPortfolioHasMultipleAccountsReportShowsTheirNames
+	| account anotherAccount portfolio portfolioTreePrinter |
+	account := ReceptiveAccount named: 'Cuenta mia'.
+	anotherAccount := ReceptiveAccount named: 'Cuenta de Juan'.
+	portfolio := Portfolio named: 'Portfolio de la familia' with: account with: anotherAccount.
+	portfolioTreePrinter := PortfolioTreePrinter for: portfolio.
+	
+	self assert: (OrderedCollection newFrom: #('Portfolio de la familia' '   Cuenta mia' '   Cuenta de Juan')) equals: portfolioTreePrinter generate.! !
+
+!PortfolioTreePrinterTest methodsFor: 'as yet unclassified' stamp: 'gmcb 6/15/2022 22:48:58'!
+test04WhenThereAreNestedPortfoliosReportShowsTheirNames
+	| account anotherAccount innerPortfolio portfolio portfolioTreePrinter |
+	account := ReceptiveAccount named: 'Cuenta mia'.
+	anotherAccount := ReceptiveAccount named: 'Cuenta de Juan'.
+	innerPortfolio := Portfolio named: 'Portfolio de hijos' with: anotherAccount .
+	portfolio := Portfolio named: 'Portfolio de la familia' with: account with: innerPortfolio.
+	portfolioTreePrinter := PortfolioTreePrinter for: portfolio.
+	
+	self assert: (OrderedCollection newFrom: #('Portfolio de la familia' '   Cuenta mia' '   Portfolio de hijos' '      Cuenta de Juan')) equals: portfolioTreePrinter generate.! !
+
+
 !classDefinition: #ReceptiveAccountTest category: 'ServiciosFinancieros-Solucion'!
 TestCase subclass: #ReceptiveAccountTest
 	instanceVariableNames: ''
@@ -364,6 +425,65 @@ test07AccountKnowsItsTransactions
 	self assert: 1 equals: account transactions size.
 	self assert: (account transactions includes: deposit).
 ! !
+
+
+!classDefinition: #TransferNetTest category: 'ServiciosFinancieros-Solucion'!
+TestCase subclass: #TransferNetTest
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'ServiciosFinancieros-Solucion'!
+
+!TransferNetTest methodsFor: 'as yet unclassified' stamp: 'gmcb 6/15/2022 22:28:49'!
+test01WhenAnAccountHasNotDoneTransferReportBalanceIsZero
+	| account transferNet |
+	account := ReceptiveAccount new.
+	transferNet := TransferNet for: account.
+	
+	self assert: 'Balance = 0 * pesos' equals: transferNet generate.! !
+
+!TransferNetTest methodsFor: 'as yet unclassified' stamp: 'gmcb 6/15/2022 22:31:13'!
+test02WhenAnAccountIsTheWithdrawLegReportBalanceShowsProperly
+	| account anotherAccount transferNet |
+	account := ReceptiveAccount new.
+	anotherAccount := ReceptiveAccount new.
+	Transfer amount: 20 * peso from: account to: anotherAccount.
+	transferNet := TransferNet for: account.
+	
+	self assert: 'Balance = -20 * pesos'	 equals: transferNet generate.! !
+
+!TransferNetTest methodsFor: 'as yet unclassified' stamp: 'gmcb 6/15/2022 22:31:56'!
+test03WhenAnAccountIsTheDepositLegReportBalanceShowsProperly
+	| account anotherAccount transferNet |
+	account := ReceptiveAccount new.
+	anotherAccount := ReceptiveAccount new.
+	Transfer amount: 30 * peso from: anotherAccount to: account .
+	transferNet := TransferNet for: account.
+	
+	self assert: 'Balance = 30 * pesos'	 equals: transferNet generate.! !
+
+!TransferNetTest methodsFor: 'as yet unclassified' stamp: 'gmcb 6/15/2022 22:33:13'!
+test04WhenAnAccountHasMultipleTransferReportShowsProperly
+	| account anotherAccount transferNet |
+	account := ReceptiveAccount new.
+	anotherAccount := ReceptiveAccount new.
+	Transfer amount: 30 * peso from: anotherAccount to: account .
+	Transfer amount: 20 * peso from: account to: anotherAccount .
+	transferNet := TransferNet for: account.
+	
+	self assert: 'Balance = 10 * pesos'	 equals: transferNet generate.! !
+
+!TransferNetTest methodsFor: 'as yet unclassified' stamp: 'gmcb 6/15/2022 22:35:28'!
+test05WhenAnAccountHasOtherTypeOfTransactionReportOmmitsIt
+	| account anotherAccount transferNet |
+	account := ReceptiveAccount new.
+	anotherAccount := ReceptiveAccount new.
+	Deposit register: 50 * peso on: account.
+	Transfer amount: 30 * peso from: anotherAccount to: account .
+	Transfer amount: 20 * peso from: account to: anotherAccount .
+	transferNet := TransferNet for: account.
+	
+	self assert: 'Balance = 10 * pesos'	 equals: transferNet generate.! !
 
 
 !classDefinition: #TransferTest category: 'ServiciosFinancieros-Solucion'!
@@ -472,7 +592,7 @@ test06CannotTransferAZeroAmount
 
 !classDefinition: #Account category: 'ServiciosFinancieros-Solucion'!
 Object subclass: #Account
-	instanceVariableNames: ''
+	instanceVariableNames: 'name'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'ServiciosFinancieros-Solucion'!
@@ -508,6 +628,15 @@ isComposedBy: anAccount
 addTransactionsTo: aCollectionOfTransactions
 
 	self subclassResponsibility ! !
+
+
+!Account methodsFor: 'as yet unclassified' stamp: 'gmcb 6/15/2022 21:02:03'!
+initializeWith: anAccountName
+	name := anAccountName.! !
+
+!Account methodsFor: 'as yet unclassified' stamp: 'gmcb 6/15/2022 21:02:12'!
+name
+	^name.! !
 
 
 !classDefinition: #Portfolio category: 'ServiciosFinancieros-Solucion'!
@@ -619,6 +748,11 @@ signalCanNotAddAccount
 	
 	self error: self class canNotAddAccountErrorMessage! !
 
+
+!Portfolio methodsFor: 'as yet unclassified' stamp: 'gmcb 6/15/2022 20:57:30'!
+accounts
+	^accounts! !
+
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
 !classDefinition: 'Portfolio class' category: 'ServiciosFinancieros-Solucion'!
@@ -629,6 +763,27 @@ Portfolio class
 canNotAddAccountErrorMessage
 	
 	^'Can not add repeated account to a portfolio'! !
+
+!Portfolio class methodsFor: 'as yet unclassified' stamp: 'gmcb 6/15/2022 21:02:56'!
+named: anAccountName
+	| account |
+	account := self new.
+	account initializeWith: anAccountName.
+	^account! !
+
+!Portfolio class methodsFor: 'as yet unclassified' stamp: 'gmcb 6/15/2022 21:03:30'!
+named: anAccountName with: anAccount
+	| account |
+	account := self with: anAccount.
+	account initializeWith: anAccountName.
+	^account! !
+
+!Portfolio class methodsFor: 'as yet unclassified' stamp: 'gmcb 6/15/2022 21:04:13'!
+named: anAccountName with: anAccount with: anotherAccount
+	| account |
+	account := self with: anAccount with: anotherAccount.
+	account initializeWith: anAccountName.
+	^account! !
 
 !Portfolio class methodsFor: 'as yet unclassified' stamp: 'HAW 5/25/2019 11:18:21'!
 with: anAccount
@@ -701,41 +856,169 @@ isComposedBy: anAccount
 
 	^self = anAccount ! !
 
+"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
+
+!classDefinition: 'ReceptiveAccount class' category: 'ServiciosFinancieros-Solucion'!
+ReceptiveAccount class
+	instanceVariableNames: ''!
+
+!ReceptiveAccount class methodsFor: 'as yet unclassified' stamp: 'gmcb 6/15/2022 21:05:05'!
+named: anAccountName
+	| account |
+	account := self new.
+	account initializeWith: anAccountName.
+	^account! !
+
 
-!classDefinition: #AccountSummary category: 'ServiciosFinancieros-Solucion'!
-Object subclass: #AccountSummary
+!classDefinition: #AccountReport category: 'ServiciosFinancieros-Solucion'!
+Object subclass: #AccountReport
 	instanceVariableNames: 'account'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'ServiciosFinancieros-Solucion'!
 
-!AccountSummary methodsFor: 'as yet unclassified' stamp: 'gmcb 6/14/2022 19:52:07'!
+!AccountReport methodsFor: 'as yet unclassified' stamp: 'gmcb 6/15/2022 13:40:41'!
 generate
-	| report |
-	report := OrderedCollection new.
-	account transactions do:[:aTransaction |
-		report add: (aTransaction summaryLineText)
-	].
-	report add: ('Balance = 'append: account balance asString).
-	^report! !
+	self subclassResponsibility! !
 
-!AccountSummary methodsFor: 'as yet unclassified' stamp: 'gmcb 6/14/2022 18:54:48'!
+!AccountReport methodsFor: 'as yet unclassified' stamp: 'gmcb 6/15/2022 13:42:22'!
 initializeWith: accountToBeReported
 	account := accountToBeReported.! !
 
+!AccountReport methodsFor: 'as yet unclassified' stamp: 'gmcb 6/15/2022 13:28:38'!
+reportDeposit: aDeposit
+	self subclassResponsibility! !
+
+!AccountReport methodsFor: 'as yet unclassified' stamp: 'gmcb 6/15/2022 13:29:11'!
+reportTransferDepositLeg: aTransferDepositLeg
+	self subclassResponsibility! !
+
+!AccountReport methodsFor: 'as yet unclassified' stamp: 'gmcb 6/15/2022 13:29:25'!
+reportTransferWithdrawLeg: aTransferWithdrawLeg
+	self subclassResponsibility! !
+
+!AccountReport methodsFor: 'as yet unclassified' stamp: 'gmcb 6/15/2022 13:28:52'!
+reportWithdraw: aWithdraw
+	self subclassResponsibility! !
+
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
-!classDefinition: 'AccountSummary class' category: 'ServiciosFinancieros-Solucion'!
-AccountSummary class
+!classDefinition: 'AccountReport class' category: 'ServiciosFinancieros-Solucion'!
+AccountReport class
 	instanceVariableNames: ''!
 
-!AccountSummary class methodsFor: 'as yet unclassified' stamp: 'gmcb 6/14/2022 18:54:30'!
+!AccountReport class methodsFor: 'as yet unclassified' stamp: 'gmcb 6/15/2022 13:43:15'!
 for: accountToBeReported
 	| accountSummary |
 	accountSummary := self new.
 	accountSummary initializeWith: accountToBeReported.
-	^accountSummary
-	! !
+	^accountSummary! !
+
+
+!classDefinition: #AccountSummary category: 'ServiciosFinancieros-Solucion'!
+AccountReport subclass: #AccountSummary
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'ServiciosFinancieros-Solucion'!
+
+!AccountSummary methodsFor: 'as yet unclassified' stamp: 'gmcb 6/15/2022 13:35:42'!
+generate
+	| report |
+	report := OrderedCollection new.
+	account transactions do:[:aTransaction | report add: (aTransaction toReportIn: self)].
+	report add: ('Balance = 'append: account balance asString).
+	^report! !
+
+!AccountSummary methodsFor: 'as yet unclassified' stamp: 'gmcb 6/15/2022 13:32:51'!
+reportDeposit: aDeposit
+	^'Depósito por 'append: aDeposit value asString ! !
+
+!AccountSummary methodsFor: 'as yet unclassified' stamp: 'gmcb 6/15/2022 13:33:16'!
+reportTransferDepositLeg: aTransferDepositLeg
+	^'Entrada por transferencia de 'append: aTransferDepositLeg value asString! !
+
+!AccountSummary methodsFor: 'as yet unclassified' stamp: 'gmcb 6/15/2022 13:33:34'!
+reportTransferWithdrawLeg: aTransferWithdrawLeg
+	^'Salida por transferencia de 'append: aTransferWithdrawLeg value asString! !
+
+!AccountSummary methodsFor: 'as yet unclassified' stamp: 'gmcb 6/15/2022 13:33:50'!
+reportWithdraw: aWithdraw
+	^'Extracción por 'append: aWithdraw value asString ! !
+
+
+!classDefinition: #PortfolioDetailedTreePrinter category: 'ServiciosFinancieros-Solucion'!
+AccountReport subclass: #PortfolioDetailedTreePrinter
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'ServiciosFinancieros-Solucion'!
+
+!PortfolioDetailedTreePrinter methodsFor: 'as yet unclassified' stamp: 'gmcb 6/15/2022 22:02:23'!
+generate
+	^(OrderedCollection newFrom: #('Portfolio de la familia' '   Balance = 0 * pesos'))! !
+
+
+!classDefinition: #PortfolioTreePrinter category: 'ServiciosFinancieros-Solucion'!
+AccountReport subclass: #PortfolioTreePrinter
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'ServiciosFinancieros-Solucion'!
+
+!PortfolioTreePrinter methodsFor: 'as yet unclassified' stamp: 'gmcb 6/15/2022 21:59:07'!
+anIndentedSubReportFrom: aPortfolio
+	| childPortfolioTreePrinter indentedChildReport |
+	indentedChildReport := OrderedCollection new.
+	childPortfolioTreePrinter := ((PortfolioTreePrinter for: aPortfolio )generate).
+	childPortfolioTreePrinter do: [:anotherAccount | indentedChildReport  add: '   ',anotherAccount ].
+	
+	^indentedChildReport! !
+
+!PortfolioTreePrinter methodsFor: 'as yet unclassified' stamp: 'gmcb 6/15/2022 21:59:07'!
+generate
+	| report |
+	report := OrderedCollection new.
+	report add: account name.
+	account accounts do: [:anAccount | 
+		(anAccount isKindOf: Portfolio)
+		ifTrue: [report addAllLast: (self anIndentedSubReportFrom: anAccount)]
+		ifFalse: [report add: '   ',(anAccount name)]].
+	
+	^report! !
+
+
+!classDefinition: #TransferNet category: 'ServiciosFinancieros-Solucion'!
+AccountReport subclass: #TransferNet
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'ServiciosFinancieros-Solucion'!
+
+!TransferNet methodsFor: 'as yet unclassified' stamp: 'gmcb 6/15/2022 13:35:50'!
+generate
+	| transferNetBalance |
+	transferNetBalance := account transactions 
+		inject: 0 * peso 
+		into: [:currentBalance :aTransaction | (aTransaction toReportIn: self) + currentBalance].
+
+	^'Balance = 'append:transferNetBalance asString! !
+
+!TransferNet methodsFor: 'as yet unclassified' stamp: 'gmcb 6/15/2022 13:34:19'!
+reportDeposit: aDeposit
+	^0 * peso! !
+
+!TransferNet methodsFor: 'as yet unclassified' stamp: 'gmcb 6/15/2022 13:35:28'!
+reportTransferDepositLeg: aTransferDepositLeg
+	^aTransferDepositLeg value! !
+
+!TransferNet methodsFor: 'as yet unclassified' stamp: 'gmcb 6/15/2022 13:35:11'!
+reportTransferWithdrawLeg: aTransferDepositLeg
+	^aTransferDepositLeg value negated! !
+
+!TransferNet methodsFor: 'as yet unclassified' stamp: 'gmcb 6/15/2022 13:34:37'!
+reportWithdraw: aWithdraw
+	^0 * peso! !
 
 
 !classDefinition: #AccountTransaction category: 'ServiciosFinancieros-Solucion'!
@@ -755,6 +1038,11 @@ value
 affectBalance: aBalance
 
 	self subclassResponsibility ! !
+
+
+!AccountTransaction methodsFor: 'as yet unclassified' stamp: 'gmcb 6/15/2022 13:39:13'!
+toReportIn: anAccountReport
+	self subclassResponsibility! !
 
 
 !classDefinition: #Deposit category: 'ServiciosFinancieros-Solucion'!
@@ -782,9 +1070,9 @@ affectBalance: aBalance
 	^aBalance + value ! !
 
 
-!Deposit methodsFor: 'as yet unclassified' stamp: 'gmcb 6/14/2022 19:50:43'!
-summaryLineText
-	^'Depósito por 'append: value asString ! !
+!Deposit methodsFor: 'as yet unclassified' stamp: 'gmcb 6/15/2022 13:36:15'!
+toReportIn: anAccountReport
+	^anAccountReport reportDeposit: self! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
@@ -863,9 +1151,9 @@ affectBalance: aBalance
 	^aBalance + self value! !
 
 
-!TransferDepositLeg methodsFor: 'as yet unclassified' stamp: 'gmcb 6/14/2022 19:50:20'!
-summaryLineText
-	^'Entrada por transferencia de 'append: transfer value asString! !
+!TransferDepositLeg methodsFor: 'as yet unclassified' stamp: 'gmcb 6/15/2022 13:36:21'!
+toReportIn: anAccountReport
+	^anAccountReport reportTransferDepositLeg: self! !
 
 
 !classDefinition: #TransferWithdrawLeg category: 'ServiciosFinancieros-Solucion'!
@@ -890,6 +1178,14 @@ affectBalance: aBalance
 !TransferWithdrawLeg methodsFor: 'as yet unclassified' stamp: 'gmcb 6/14/2022 19:50:35'!
 summaryLineText
 	^'Salida por transferencia de 'append: transfer value asString! !
+
+!TransferWithdrawLeg methodsFor: 'as yet unclassified' stamp: 'gmcb 6/15/2022 13:36:27'!
+toReportIn: anAccountReport
+	^anAccountReport reportTransferWithdrawLeg: self! !
+
+!TransferWithdrawLeg methodsFor: 'as yet unclassified' stamp: 'gmcb 6/15/2022 11:24:59'!
+transferNetValue
+	^transfer value negated! !
 
 
 !classDefinition: #Withdraw category: 'ServiciosFinancieros-Solucion'!
@@ -920,6 +1216,14 @@ affectBalance: aBalance
 !Withdraw methodsFor: 'as yet unclassified' stamp: 'gmcb 6/14/2022 19:50:53'!
 summaryLineText
 	^'Extracción por 'append: value asString ! !
+
+!Withdraw methodsFor: 'as yet unclassified' stamp: 'gmcb 6/15/2022 13:36:33'!
+toReportIn: anAccountReport
+	^anAccountReport reportWithdraw: self! !
+
+!Withdraw methodsFor: 'as yet unclassified' stamp: 'gmcb 6/15/2022 11:25:22'!
+transferNetValue
+	^0 * peso! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
